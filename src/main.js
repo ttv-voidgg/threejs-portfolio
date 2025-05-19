@@ -229,7 +229,10 @@ loader.load("/models/model.glb", (glb)=>{
                 child.name.includes("SecondAU008") ||
                 child.name.includes("SecondAU009") ||
                 child.name.includes("SecondAU010") ||
-                child.name.includes("SecondAU011")
+                child.name.includes("SecondAU011") ||
+                child.name.includes("SeventhMenuAbout") ||
+                child.name.includes("SeventhMenuContact") ||
+                child.name.includes("SeventhMenuProjects")
             ) {
                 const name = child.name;
 
@@ -368,6 +371,17 @@ loader.load("/models/model.glb", (glb)=>{
                     emissive: new THREE.Color(0xffffff),
                     emissiveIntensity: 3,
                     side: THREE.DoubleSide
+                });
+
+                emitMesh = child;
+            }
+
+            if (child.name.includes("WallLight")) {
+                child.material = new THREE.MeshStandardMaterial({
+                    color: 0x000000,
+                    emissive: new THREE.Color(0xffffff),
+                    emissiveIntensity: 5,
+                    side: THREE.DoubleSide,
                 });
 
                 emitMesh = child;
