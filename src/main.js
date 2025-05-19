@@ -629,10 +629,9 @@ const FilmShader = {
 
 const softPass = new ShaderPass(FilmShader);
 
-softPass.uniforms.tint.value = new THREE.Vector3(0.02, 0.02, 0.02); // warm tint
-softPass.uniforms.noiseIntensity.value = 0.005;
-
-composer.addPass(softPass);
+//softPass.uniforms.tint.value = new THREE.Vector3(0.02, 0.02, 0.02); // warm tint
+//softPass.uniforms.noiseIntensity.value = 0.005;
+//composer.addPass(softPass);
 
 // Add Unreal Bloom Pass
 const bloomPass = new UnrealBloomPass(
