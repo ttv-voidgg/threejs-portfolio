@@ -7,6 +7,10 @@ import {GLTFLoader} from "three/addons/loaders/GLTFLoader.js";
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
+import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
+
 import gsap from "gsap";
 
 //import smokeVertexShader from "./shaders/smoke/vertex.glsl";
@@ -15,13 +19,19 @@ import gsap from "gsap";
 //import themeFragmentShader from "./shaders/theme/fragment.glsl";
 
 //Initialize some stuff
-
 const canvas = document.querySelector('#experience-canvas');
 
 const sizes = {
     width: window.innerWidth,
     height: window.innerHeight,
 }
+
+
+const renderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, {
+    format: THREE.RGBAFormat,
+    stencilBuffer: false,
+    samples:10000,
+});
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color("#000000");
@@ -165,11 +175,12 @@ videoTexture.repeat.set(1.0259642601013184,  0.32274699211120605);
 
 const interactiveMeshes = [];
 
-let linkedInMesh = null;
-let InstagramMesh = null;
-let GitHubMesh = null;
-let coinBoxMesh = null;
-let plantMesh = null;
+let linkedInMesh = null,
+    InstagramMesh = null,
+    GitHubMesh = null,
+    coinBoxMesh = null,
+    plantMesh = null,
+    chairTop
 
 
 video.addEventListener('loadedmetadata', () => {
@@ -187,6 +198,49 @@ loader.load("/models/model.glb", (glb)=>{
                     child.material = material;
                 }
             })
+            //LOG ALL MESHES
+            console.log('Mesh:', child.name, child);
+
+            //AmongUS
+            //Fix for SecondAU010
+            const amongUs10 = scene.getObjectByName('SecondAU010');
+
+            if (amongUs10 && amongUs10.isMesh) {
+                const currentScale = new THREE.Vector3();
+                amongUs10.getWorldScale(currentScale);
+
+                amongUs10.geometry.applyMatrix4(new THREE.Matrix4().makeScale(currentScale.x, currentScale.y, currentScale.z));
+
+                amongUs10.scale.set(1, 1, 1);
+                amongUs10.updateMatrixWorld(true);
+
+                console.log('Scale normalized for mesh: SecondAU010');
+            } else {
+                console.warn('Mesh named SecondAU010 not found or is not a mesh.');
+            }
+
+            if (
+                child.name.includes("SecondAU001") ||
+                child.name.includes("SecondAU002") ||
+                child.name.includes("SecondAU003") ||
+                child.name.includes("SecondAU004") ||
+                child.name.includes("SecondAU005") ||
+                child.name.includes("SecondAU006") ||
+                child.name.includes("SecondAU008") ||
+                child.name.includes("SecondAU009") ||
+                child.name.includes("SecondAU010") ||
+                child.name.includes("SecondAU011")
+            ) {
+                const name = child.name;
+
+                interactiveMeshes.push(child);
+            }
+
+            //Chair Animation
+            if (child.name.includes("ThirdChairSeat")) {
+                chairTop = child;
+                child.userData.initialRotation = new THREE.Euler().copy(child.rotation);
+            }
 
             if (child.name.includes("TargetsComputerGPUTarget000")) {
                 const bbox = new THREE.Box3().setFromObject(child);
@@ -198,8 +252,6 @@ loader.load("/models/model.glb", (glb)=>{
                     map: videoTexture,
                 });
             }
-
-            console.log('Mesh:', child.name, child);
 
             if (child.name === 'FifthbakedCoinBox') {
                 coinBoxMesh = child;
@@ -327,7 +379,7 @@ loader.load("/models/model.glb", (glb)=>{
                     color: 0x000000,
                     emissive: new THREE.Color(0xffffff),
                     emissiveIntensity: 5,
-                    side: THREE.DoubleSide
+                    side: THREE.DoubleSide,
                 });
 
                 emitMesh = child;
@@ -338,7 +390,7 @@ loader.load("/models/model.glb", (glb)=>{
                 child.material = new THREE.MeshStandardMaterial({
                     color: 0x000000,
                     emissive: new THREE.Color(0xffffff),
-                    emissiveIntensity: 2,
+                    emissiveIntensity: 5,
                     side: THREE.DoubleSide
                 });
 
@@ -512,19 +564,81 @@ window.addEventListener("resize", () => {
 });
 
 // Required for postprocessing
-const composer = new EffectComposer(renderer);
+const composer = new EffectComposer(renderer, renderTarget);
+const fxaaPass = new ShaderPass(FXAAShader);
+
 composer.setSize(sizes.width, sizes.height);
 composer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+fxaaPass.material.uniforms['resolution'].value.set(1 / sizes.width, 1 / sizes.height);
+composer.addPass(fxaaPass);
 
 // Add the normal render pass
 const renderPass = new RenderPass(scene, camera);
 composer.addPass(renderPass);
 
+//Softer Colors
+const FilmShader = {
+    uniforms: {
+        tDiffuse: { value: null },
+        time: { value: 0 },
+        tint: { value: new THREE.Vector3(0.05, 0.02, 0.0) },
+        noiseIntensity: { value: 0.001 },
+        grayscale: { value: false }
+    },
+    vertexShader: `
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+    fragmentShader: `
+    uniform sampler2D tDiffuse;
+    uniform float time;
+    uniform vec3 tint;
+    uniform float noiseIntensity;
+    uniform bool grayscale;
+
+    varying vec2 vUv;
+
+    float rand(vec2 co) {
+      return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453);
+    }
+
+    void main() {
+      vec4 texel = texture2D(tDiffuse, vUv);
+
+      // Add tint
+      texel.rgb += tint;
+
+      // Optional grayscale
+      if (grayscale) {
+        float gray = dot(texel.rgb, vec3(0.299, 0.587, 0.114));
+        texel.rgb = vec3(gray);
+      }
+
+      // Noise
+      float noise = rand(vUv + time);
+      texel.rgb += noiseIntensity * (noise - 0.5);
+      gl_FragColor = texel;
+    }
+  `
+};
+
+
+const softPass = new ShaderPass(FilmShader);
+
+softPass.uniforms.tint.value = new THREE.Vector3(0.02, 0.02, 0.02); // warm tint
+softPass.uniforms.noiseIntensity.value = 0.005;
+
+composer.addPass(softPass);
+
 // Add Unreal Bloom Pass
 const bloomPass = new UnrealBloomPass(
     new THREE.Vector2(window.innerWidth, window.innerHeight),
-        .2,  // strength
-        .2,  // radius
+        0.3,  // strength
+        1.5,  // radius
     0.85  // threshold
 );
 composer.addPass(bloomPass);
@@ -538,7 +652,7 @@ const rotationAmplitude = 0.00025; // how much it rotates
 const rotationFrequency = .1; // oscillations per second
 let clock = new THREE.Clock();
 
-const render = () => {
+const render = (timestamp) => {
     //VARS
     const elapsed = clock.getElapsedTime();
 
@@ -555,6 +669,20 @@ const render = () => {
     xAxisFans.forEach(fan => fan.rotation.x += 0.02);
     yAxisFans.forEach(fan => fan.rotation.y += 0.02);
     zAxisFans.forEach(fan => fan.rotation.y -= 0.02);
+
+    //Chair Rotate
+    // Chair rotate animation
+    if (chairTop) {
+        const time = timestamp * 0.001;
+        const baseAmplitude = Math.PI / 8;
+
+        const rotationOffset =
+            baseAmplitude *
+            Math.sin(time * 0.5) *
+            (1 - Math.abs(Math.sin(time * 0.5)) * 0.3);
+
+        chairTop.rotation.z = chairTop.userData.initialRotation.z + rotationOffset;
+    }
 
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(interactiveMeshes, false);
@@ -632,7 +760,7 @@ const render = () => {
             }
         }
 
-// When hovering
+        // When hovering
         if (hoveredMesh.name === 'FifthbakedCoinBox' && isFifthbakedCoinBoxClicked) {
             const plant = scene.getObjectByName('FifthbakedCoinBoxPlant');
             if (plant) {
@@ -659,7 +787,7 @@ const render = () => {
     } else {
         // Reset if no intersection
         if (hoveredMesh) {
-            gsap.to(hoveredMesh.scale, { x: 1, y: 1, z: 1, duration: 0.3 });
+                gsap.to(hoveredMesh.scale, { x: 1, y: 1, z: 1, duration: 0.3 });
 
             if (hoveredMesh.material.emissiveIntensity !== undefined) {
                 gsap.to(hoveredMesh.material, {
@@ -670,6 +798,7 @@ const render = () => {
             }
 
             if (currentPulse) currentPulse.kill();
+
             hoveredMesh = null;
         }
 
