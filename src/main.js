@@ -13,6 +13,7 @@ import gsap from "gsap";
 //import smokeFragmentShader from "./shaders/smoke/fragment.glsl";
 //import themeVertexShader from "./shaders/theme/vertex.glsl";
 //import themeFragmentShader from "./shaders/theme/fragment.glsl";
+
 //Initialize some stuff
 
 const canvas = document.querySelector('#experience-canvas');
@@ -332,6 +333,18 @@ loader.load("/models/model.glb", (glb)=>{
                 emitMesh = child;
             }
 
+            if (child.isMesh && child.name === 'Text') {
+                // Create emissive material
+                child.material = new THREE.MeshStandardMaterial({
+                    color: 0x000000,
+                    emissive: new THREE.Color(0xffffff),
+                    emissiveIntensity: 2,
+                    side: THREE.DoubleSide
+                });
+
+                emitMesh = child;
+            }
+
             if (child.isMesh && child.name === 'TargetsSleeping') {
                 // Create emissive material
                 child.material = new THREE.MeshStandardMaterial({
@@ -357,6 +370,13 @@ const camera = new THREE.PerspectiveCamera(
     0.1,
     200
 );
+
+
+const cameraGroup = new THREE.Group();
+cameraGroup.add(camera);
+scene.add(cameraGroup);
+
+const baseCamY = cameraGroup.position.y || 0;
 
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas,
@@ -394,12 +414,8 @@ if (window.innerWidth < 768) {
         -0.7433922282864018
     );
 } else {
-    camera.position.set(12.798676274812095, 16.512783721539325, 12.785748391518231);
-    controls.target.set(
-        -0.487544531130077,
-        3.667334068422673,
-        -1.6516437315843748
-    );
+    camera.position.set(14.488285527338899, 4.85847717518284, 23.611508023196524);
+    controls.target.set(1.9999999999999996, 3.9969178828491003, -3.788852137422142 );
 }
 
 
@@ -517,6 +533,7 @@ const targetsSleeping = scene.getObjectByName('TargetsSleeping');
 const baseY = 4;
 const amplitude = 0.2; // how high it goes up and down
 const frequency = .05; // oscillations per second
+const textAmplitude = .5; // how high it goes up and down
 const rotationAmplitude = 0.00025; // how much it rotates
 const rotationFrequency = .1; // oscillations per second
 let clock = new THREE.Clock();
@@ -525,6 +542,12 @@ const render = () => {
     //VARS
     const elapsed = clock.getElapsedTime();
 
+    // Amplitude = how much it moves, Frequency = how fast it moves
+    const wobbleAmount = .5; // Increase this for more wobble
+    const wobbleSpeed = .5;
+
+    // Float up/down
+    cameraGroup.position.y = baseCamY + Math.sin(elapsed * wobbleSpeed) * wobbleAmount;
     //Orbit Controls
     controls.update();
 
@@ -547,6 +570,23 @@ const render = () => {
 
         // Oscillate rotation
         targetsSleeping.rotation.x = baseRotationX + rotationSine * rotationAmplitude;
+    }
+
+    const TextName = scene.getObjectByName('Text');
+
+    if (TextName) {
+
+        if (window.innerWidth <= 768) {
+            TextName.visible = false;
+        } else {
+            TextName.visible = true;
+        }
+
+        const baseRotationX = TextName.rotation.x; // Save original rotation
+        const sine = Math.sin(elapsed * frequency * Math.PI * 2);
+        const rotationSine = Math.sin(elapsed * rotationFrequency * Math.PI * 2);
+
+        TextName.position.y = baseY + sine * (textAmplitude / 2);
     }
 
     if (intersects.length > 0) {
@@ -657,6 +697,9 @@ const render = () => {
 
         canvas.style.cursor = 'default';
     }
+
+    //console.log(camera.position);
+    //console.log(controls.target);
 
 
     composer.render(scene, camera);
