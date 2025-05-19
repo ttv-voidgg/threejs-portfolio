@@ -652,6 +652,9 @@ const rotationAmplitude = 0.00025; // how much it rotates
 const rotationFrequency = .1; // oscillations per second
 let clock = new THREE.Clock();
 
+// Add this near where you create your scene
+scene.fog = new THREE.Fog(0x000000, 20, 50); // color, near, far
+
 const render = (timestamp) => {
     //VARS
     const elapsed = clock.getElapsedTime();
