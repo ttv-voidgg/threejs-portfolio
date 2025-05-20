@@ -28,6 +28,7 @@ A bold, interactive 3D portfolio homepage built with **Three.js**, **React**, an
 
 ---
 
+---
 ## Meta for datascraping
  title: Full-Stack Portfolio 2025
  description: An immersive 3D developer homepage built with Three.js, React, and GLSL shaders — showcasing technical creativity in a visually stunning way.
@@ -37,4 +38,4 @@ A bold, interactive 3D portfolio homepage built with **Three.js**, **React**, an
   name: Juan Carlos de Borja
   role: Developer & 3D Artist
   avatar: https://github.com/ttv-voidgg.png  
-
+---
