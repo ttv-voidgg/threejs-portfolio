@@ -180,7 +180,10 @@ let linkedInMesh = null,
     GitHubMesh = null,
     coinBoxMesh = null,
     plantMesh = null,
-    chairTop
+    chairTop = null,
+    workBtn = null,
+    aboutBtn = null,
+    contactBtn = null;
 
 
 video.addEventListener('loadedmetadata', () => {
@@ -288,6 +291,14 @@ loader.load("/models/model.glb", (glb)=>{
                 console.log("Classified fan:", name);
             }
 
+
+            if (child.name.includes("SeventhMenuProjects")) {
+                workBtn = child;
+            } else if (child.name.includes("SeventhMenuAbout")) {
+                aboutBtn = child;
+            } else if (child.name.includes("SeventhMenuContact")) {
+                contactBtn = child;
+            }
 
             if (child.name.includes('LinkedIn021')) {
                 linkedInMesh = child;
@@ -485,27 +496,6 @@ if (window.innerWidth < 768) {
 }
 
 
-window.addEventListener('click', (event) => {
-    pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-    pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
-
-    raycaster.setFromCamera(pointer, camera);
-    const intersects = raycaster.intersectObjects(scene.children, true);
-
-    if (intersects.length > 0) {
-        const clickedMesh = intersects[0].object;
-        if (clickedMesh === linkedInMesh) {
-            window.open('https://www.linkedin.com/in/jcedeborja', '_blank');
-        }
-        if (clickedMesh === InstagramMesh) {
-            window.open('https://www.instagram.com/kai._.0008/', '_blank');
-        }
-        if (clickedMesh === GitHubMesh) {
-            window.open('https://github.com/ttv-voidgg/', '_blank');
-        }
-    }
-});
-
 let isFifthbakedCoinBoxClicked = false;
 
 window.addEventListener('click', (event) => {
@@ -537,29 +527,144 @@ window.addEventListener('click', (event) => {
     }
 });
 
-function handleRaycasterInteraction() {
-    if (currentIntersects.length > 0) {
-        const object = currentIntersects[0].object;
+//MODALS
+const modalIDs = ["projectModal", "aboutModal", "contactModal"];
+const modals = {};
+let isModalOpen = false;
+let touchHappened = false;
 
-        Object.entries(socialLinks).forEach(([key, url]) => {
-            if (object.name.includes(key)) {
-                const newWindow = window.open();
-                newWindow.opener = null;
-                newWindow.location = url;
-                newWindow.target = "_blank";
-                newWindow.rel = "noopener noreferrer";
-            }
-        });
+const overlay = document.querySelector(".overlay");
 
-        // if (object.name.includes("Work_Button")) {
-        //     showModal(modals.work);
-        // } else if (object.name.includes("About_Button")) {
-        //     showModal(modals.about);
-        // } else if (object.name.includes("Contact_Button")) {
-        //     showModal(modals.contact);
-        // }
-    }
+// Register modals
+modalIDs.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) modals[id] = el;
+});
+
+// Show Modal
+function showModal(modal) {
+
+    if (!modal) return;
+
+    console.log("Opening modal:", modal.id);
+
+    // Remove hidden classes first so they're visible for GSAP
+    overlay.classList.remove("hidden");
+    modal.classList.remove("hidden");
+
+    // Set initial state immediately after showing
+    gsap.set(overlay, { opacity: 0 });
+    gsap.set(modal, { opacity: 0, scale: 0.9 });
+
+    // Animate in
+    gsap.to(overlay, {
+        opacity: 1,
+        duration: 0.3,
+        ease: "power2.out",
+    });
+
+    gsap.to(modal, {
+        opacity: 1,
+        scale: 1,
+        duration: 0.5,
+        ease: "back.out(1.7)",
+        onComplete: () => {
+            gsap.set(modal, { clearProps: "opacity,scale" });
+        },
+    });
+
+    isModalOpen = true;
+
 }
+
+// Hide Modal
+function hideModal(modal) {
+    if (!modal) return;
+
+    console.log("Closing modal:", modal.id);
+
+    gsap.to(overlay, {
+        opacity: 0,
+        duration: 0.3,
+        ease: "power2.inOut",
+    });
+
+    gsap.to(modal, {
+        opacity: 0,
+        scale: 0.9,
+        duration: 0.4,
+        ease: "back.in(1.7)",
+        onComplete: () => {
+            overlay.classList.add("hidden");
+            modal.classList.add("hidden");
+            gsap.set(modal, { clearProps: "opacity,scale" });
+        },
+    });
+
+    isModalOpen = false;
+}
+
+// Overlay dismiss logic
+["click", "touchend"].forEach((eventType) => {
+    overlay.addEventListener(
+        eventType,
+        (e) => {
+            e.preventDefault();
+            if (eventType === "touchend") touchHappened = true;
+            const openModal = Object.values(modals).find((m) => !m.classList.contains("hidden"));
+            if (openModal) hideModal(openModal);
+        },
+        { passive: false }
+    );
+});
+
+// Exit button logic
+document.querySelectorAll(".modal-exit-button").forEach((button) => {
+    function handleClose(e) {
+        e.preventDefault();
+        const modal = e.target.closest(".modal");
+        if (!modal) return;
+
+        // Button feedback
+        gsap.to(button, {
+            scale: 1.3,
+            duration: 0.2,
+            ease: "power2.out",
+            onComplete: () => {
+                gsap.to(button, {
+                    scale: 1,
+                    duration: 0.3,
+                    ease: "elastic.out(1, 0.5)",
+                    onComplete: () => {
+                        gsap.set(button, { clearProps: "scale" });
+                        hideModal(modal);
+                    },
+                });
+            },
+        });
+    }
+
+    button.addEventListener("click", (e) => {
+        if (!touchHappened) handleClose(e);
+    });
+
+    button.addEventListener("touchend", (e) => {
+        touchHappened = true;
+        handleClose(e);
+    }, { passive: false });
+});
+
+// For testing with console or devtools
+window.openModalByKey = function (key) {
+    console.log(1);
+    const modal = modals[key];
+    if (modal) {
+        showModal(modal);
+    } else {
+        console.warn(`Modal with key "${key}" not found`);
+    }
+};
+
 
 
 
@@ -575,6 +680,35 @@ window.addEventListener("resize", () => {
     // Update renderer
     renderer.setSize(sizes.width, sizes.height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+});
+
+window.addEventListener('click', (event) => {
+    pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+    pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
+
+    raycaster.setFromCamera(pointer, camera);
+    const intersects = raycaster.intersectObjects(scene.children, true);
+
+    if (intersects.length > 0) {
+        const clickedMesh = intersects[0].object;
+        if (clickedMesh === linkedInMesh) {
+            window.open('https://www.linkedin.com/in/jcedeborja', '_blank');
+        }
+        if (clickedMesh === InstagramMesh) {
+            window.open('https://www.instagram.com/kai._.0008/', '_blank');
+        }
+        if (clickedMesh === GitHubMesh) {
+            window.open('https://github.com/ttv-voidgg/', '_blank');
+        }
+        if (clickedMesh.name === 'SeventhMenuProjects') {
+            showModal(modals.projectModal);
+            return;
+        }
+        if (clickedMesh.name === 'SeventhMenuAbout') {
+            showModal(modals.aboutModal);
+            return;
+        }
+    }
 });
 
 // Required for postprocessing
