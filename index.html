@@ -1,6 +1,28 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <style>
+      html.loading *,
+      html.loading *::before,
+      html.loading *::after {
+        visibility: hidden !important;
+      }
+
+      #loading-screen {
+        position: fixed;
+        inset: 0;
+        background: #000;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+      }
+    </style>
+
+    <noscript><link rel="stylesheet" href="/src/style.scss"></noscript>
+    <link rel="preload" href="/src/style.scss" as="style" onload="this.onload=null;this.rel='stylesheet'">
+
     <meta charset="UTF-8" />
     <!-- Primary Meta Tags -->
     <link rel="apple-touch-icon" sizes="180x180" href="/images/icons/apple-touch-icon.png">
@@ -45,11 +67,16 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   </head>
-  <body class="font-montserrat">
+  <body class="font-montserrat loading">
+
+  <div id="loading-screen">
+    <canvas id="loading-canvas"></canvas>
+  </div>
+
     <!--MODALS-->
     <div class="overlay fixed inset-0 bg-black bg-opacity-50 hidden z-40"></div>
 
-    <div id="aboutModal" class="relative modal  z-50  w-4/5 max-md:w-full my-10 mx-auto max-sm:my-0">
+    <div id="aboutModal" class="relative modal z-50 w-4/5 max-md:w-full my-10 mx-auto hidden max-sm:my-0">
       <button class="modal-exit-button sticky top-1 right-0 ml-3 z-50 float-right max-sm:-ml-36 max-sm:mr-5 max-sm:mt-5">
         <img src="/images/graphics/close.png" alt="Life Icon" class="h-12 w-12" />
       </button>
@@ -315,6 +342,7 @@
       <canvas class="experience-canvas z-0" id="experience-canvas"></canvas>
     </div>
 
+  <script type="module" src="/src/loading.js"></script>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

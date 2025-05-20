@@ -1,5 +1,3 @@
-import './style.scss'
-
 import * as THREE from 'three';
 import { OrbitControls } from '/src/utils/OrbitControls.js';
 import {DRACOLoader} from "three/addons/loaders/DRACOLoader.js";
