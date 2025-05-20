@@ -27,6 +27,8 @@ A bold, interactive 3D portfolio homepage built with **Three.js**, **React**, an
 - 💡 Optimized for fast loading and visual polish
 
 ---
+
+---
 title: Full-Stack Portfolio 2025
 description: An immersive 3D developer homepage built with Three.js, React, and GLSL shaders — showcasing technical creativity in a visually stunning way.
 date: 2025-05-20
