@@ -626,12 +626,12 @@ document.querySelectorAll(".modal-exit-button").forEach((button) => {
         // Button feedback
         gsap.to(button, {
             scale: 1.3,
-            duration: 0.2,
+            duration: 0,
             ease: "power2.out",
             onComplete: () => {
                 gsap.to(button, {
                     scale: 1,
-                    duration: 0.3,
+                    duration: 0,
                     ease: "elastic.out(1, 0.5)",
                     onComplete: () => {
                         gsap.set(button, { clearProps: "scale" });
@@ -704,6 +704,10 @@ window.addEventListener('click', (event) => {
         }
         if (clickedMesh.name === 'SeventhMenuAbout') {
             showModal(modals.aboutModal);
+            return;
+        }
+        if (clickedMesh.name === 'SeventhMenuContact') {
+            showModal(modals.contactModal);
             return;
         }
     }

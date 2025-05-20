@@ -248,5 +248,5 @@
 
         // Initialize your main Three.js scene here
         // This is where you would call your main initialization code
-    }, 5000); // 3 seconds loading time
+    }, 500); // 3 seconds loading time
 })();
