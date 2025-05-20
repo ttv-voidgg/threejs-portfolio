@@ -1,15 +1,15 @@
 ---
- title: Full-Stack Portfolio 2025
- description: An immersive 3D developer homepage built with Three.js, React, and GLSL shaders — showcasing technical creativity in a visually stunning way.
- date: 2025-05-20
- image: https://webdev.eejay.me/images/preview.png- category: Development
- author:
-  name: Juan Carlos de Borja
-  role: Developer & 3D Artist
-  avatar: https://github.com/ttv-voidgg.png  
+title: Full-Stack Portfolio 2025
+description: An immersive 3D developer homepage built with Three.js, React, and GLSL shaders — showcasing technical creativity in a visually stunning way.
+date: 2025-05-20
+image: https://webdev.eejay.me/images/preview.png- category: Development
+author:
+ name: Juan Carlos de Borja
+ role: Developer & 3D Artist
+ avatar: https://github.com/ttv-voidgg.png  
 ---
 
-# Full-Stack Portfolio 2025 – 3D Developer Homepage
+# Full-Stack Portfolio 2025 – A Three.JS Website
 
 A bold, interactive 3D portfolio homepage built with **Three.js**, **React**, and **GLSL shaders**. Designed to stand out in a world of static resumes, this site merges creative technology, motion design, and personal branding into one immersive experience.
 
