@@ -6,7 +6,7 @@ image: https://webdev.eejay.me/images/preview.png
 category: Development
 author:
  name: Juan Carlos de Borja
- role: Developer and 3D artist
+ role: Developer, 3D artist and Author
  avatar: https://github.com/ttv-voidgg.png  
 ---
 
