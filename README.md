@@ -6,20 +6,10 @@ image: https://webdev.eejay.me/images/preview.png
 category: Development
 author:
  name: Juan Carlos de Borja
- role: Developer & 3D Artist
+ role: Developer and 3D artist
  avatar: https://github.com/ttv-voidgg.png  
 ---
----
-title: Your Repository Title
-description: A brief description of your repository.
-date: 2023-04-15
-image: https://example.com/your-banner-image.jpg
-category: Development
-author:
-  name: Your Name
-  role: Developer
-  avatar: https://example.com/your-avatar.jpg
----
+
 
 # Full-Stack Portfolio 2025 – A Three.JS Website
 
