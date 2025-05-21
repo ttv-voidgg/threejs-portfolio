@@ -990,7 +990,7 @@ const render = (timestamp) => {
             }
         }
 
-        canvas.style.cursor = 'url(../public/images/cursor/pointer.png), auto';
+        canvas.style.cursor = 'url(/images/cursor/pointer.png), auto';
     } else {
         // Reset if no intersection
         if (hoveredMesh) {
@@ -1031,7 +1031,7 @@ const render = (timestamp) => {
             });
         }
 
-        canvas.style.cursor = 'url(../public/images/cursor/default.png), auto';
+        canvas.style.cursor = 'url(/images/cursor/default.png), auto';
     }
 
     //console.log(camera.position);

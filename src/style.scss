@@ -42,16 +42,16 @@
 html {
   scrollbar-width: thin;
   scrollbar-color: #60a5fa rgba(000,000,000,.1);
-  cursor:url(../public/images/cursor/default.png), auto;
+  cursor:url(/images/cursor/default.png), auto;
 }
 
 //Cursor
 canvas {
-  cursor:url(../public/images/cursor/default.png), auto;
+  cursor:url(/images/cursor/default.png), auto;
 }
 
 a {
-  cursor:url(../public/images/cursor/pointer.png), auto;
+  cursor:url(/images/cursor/pointer.png), auto;
 }
 
 //Loading Screen
@@ -116,7 +116,7 @@ a {
 .modal-exit-button {
   display: inline-block;
   transition: transform 1s ease;
-  cursor:url(../public/images/cursor/pointer.png), auto;
+  cursor:url(/images/cursor/pointer.png), auto;
 }
 
 .modal-exit-button:hover {
