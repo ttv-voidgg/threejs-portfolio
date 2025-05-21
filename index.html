@@ -67,12 +67,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   </head>
-  <body class="font-montserrat loading">
+
+  <body class="font-montserrat loading cursor">
 
   <div id="loading-screen">
     <canvas id="loading-canvas"></canvas>
   </div>
   <div class="overlay fixed inset-0 bg-black bg-opacity-50 hidden z-40"></div>
+
 
   <!--MODALS-->
     <div id="aboutModal" class="relative modal z-50 w-4/5 max-md:w-full my-10 mx-auto hidden max-sm:my-0">
@@ -80,7 +82,7 @@
         <img src="/images/graphics/close.png" alt="Life Icon" class="h-12 w-12" />
       </button>
         <div
-                  class="rounded-xl p-3 bg-black/80 overflow-y-auto text-white max-h-[90vh] max-sm:max-h-[100vh] backdrop-blur-md max-sm:p-0 max-sm:bg-black/40"
+                  class="rounded-xl overflow-y-auto text-white max-h-[90vh] max-sm:max-h-[100vh] backdrop-blur-md max-sm:p-0 max-sm:bg-black/40"
           >
             <div class="modal-content w-full bg-[#0f1121]/50 rounded-2xl border border-gray-800 shadow-2xl max-sm:bg-transparent">
               <div class="p-2 max-sm:p-0">
@@ -104,6 +106,9 @@
                     <div class="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
                       <img src="/images/avatar.jpg" alt="Juan Carlos de Borja" class="object-cover w-full h-full max-sm:rounded-2xl" />
                     </div>
+                  </div>
+                  <div class="max-sm:hidden absolute left-1/2 -ml-16 -mt-16  z-50 animate-bounce w-16 h-16 flex items-center justify-center rounded-full border-2 border-white text-4xl text-white">
+                    ↓
                   </div>
                 </section>
 
@@ -332,18 +337,83 @@
         </div>
     </div>
 
-  <div id="projectModal" class="relative modal z-50 w-4/5 max-md:w-full my-10 mx-auto hidden max-sm:my-0">
+  <div id="projectModal" class="relative modal z-50 w-4/5 max-md:w-full my-10 mx-auto max-sm:my-0">
     <button class="modal-exit-button sticky top-1 right-0 ml-3 z-50 float-right max-sm:-ml-36 max-sm:mr-5 max-sm:mt-5">
       <img src="/images/graphics/close.png" alt="Life Icon" class="h-12 w-12" />
     </button>
     <div
-            class="rounded-xl p-3 bg-black/80 overflow-y-auto text-white max-h-[90vh] max-sm:max-h-[100vh] backdrop-blur-md max-sm:p-0 max-sm:bg-black/40"
+            class="rounded-xl overflow-y-auto bg-black/50 p-3 text-white max-h-[90vh] max-sm:max-h-[100vh] backdrop-blur-md max-sm:p-0 max-sm:bg-black/40"
     >
-      <div class="bg-white py-24 sm:py-32">
-        <div class="mx-auto max-w-7xl px-6 lg:px-8">
-          <div class="mx-auto max-w-2xl lg:max-w-4xl">
-            <h2 class="text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl">My GitHub Projects</h2>
-            <p class="mt-2 text-lg leading-8 text-gray-600">Explore my latest repositories and projects on GitHub.</p>
+      <div class="bg-black/20 rounded-xl py-4">
+        <div class="mx-auto px-2 lg:px-4">
+          <div class="mx-auto">
+
+            <div class="bg-black/50 rounded-xl">
+                <div class="relative isolate">
+                  <div class="absolute top-0 right-0 left-1/2 -z-10 -ml-24 transform-gpu overflow-hidden blur-3xl lg:ml-24 xl:ml-48" aria-hidden="true">
+                    <div class="aspect-801/1036 w-200.25 bg-linear-to-tr from-[#ff80b5] to-[#9089fc] opacity-30" style="clip-path: polygon(63.1% 29.5%, 100% 17.1%, 76.6% 3%, 48.4% 0%, 44.6% 4.7%, 54.5% 25.3%, 59.8% 49%, 55.2% 57.8%, 44.4% 57.2%, 27.8% 47.9%, 35.1% 81.5%, 0% 97.7%, 39.2% 100%, 35.2% 81.4%, 97.2% 52.8%, 63.1% 29.5%)"></div>
+                  </div>
+                  <div class="overflow-hidden pb-5">
+                    <div class="mx-auto max-w-7xl px-6 pt-36 pb-32 max-sm:pb-6 sm:pt-60 lg:px-8 lg:pt-32">
+                      <div class="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center">
+                        <div class="relative w-full lg:max-w-xl lg:shrink-0 xl:max-w-2xl">
+                          <h1 class="text-5xl font-semibold tracking-tight text-pretty text-white sm:text-7xl">My Digital Playground</h1>
+                          <p class="mt-8 text-lg font-medium text-pretty text-gray-300 sm:max-w-md sm:text-xl/8 lg:max-w-none">
+                            From coding, photography, to everything related to arts.
+                          </p>
+                          <p class="mt-4 text-lg font-medium text-pretty text-gray-300 sm:max-w-md sm:text-xl/8 lg:max-w-none">
+                            When I'm not in an adventure or doing any crazy stuff,
+                            you'll usually find me just sitting in front of my computer inventing stuff, or trying to start a new project.
+                            Come check my projects down below to see what I'm working on.
+                          </p>
+                          <p class="mt-4 text-lg font-medium text-pretty text-gray-300 sm:max-w-md sm:text-xl/8 lg:max-w-none">
+                            Check my other stuff out:
+                          </p>
+                          <p class="mt-2 text-lg font-medium text-pretty text-gray-300 sm:max-w-md sm:text-xl/8 lg:max-w-none">
+                            <a href="https://www.instagram.com/kai._.0008/">
+                              <img src="/images/graphics/instagram.png" alt="Life Icon" class="h-16 w-16 hover:saturate-50 inline" />
+                            </a>
+                            <a href="https://www.linkedin.com/in/jcedeborja">
+                              <img src="/images/graphics/in.png" alt="Life Icon" class="h-16 w-16 hover:saturate-50 inline" />
+                            </a>
+                          </p>
+                        </div>
+                        <div class="max-sm:hidden mt-14 flex justify-end gap-8 sm:-mt-44 sm:justify-start sm:pl-20 lg:mt-0 lg:pl-0">
+                          <div class="ml-auto w-44 flex-none space-y-8 pt-32 sm:ml-0 sm:pt-80 lg:order-last lg:pt-36 xl:order-none xl:pt-80">
+                            <div class="relative">
+                              <img src="/images/misc/first-rev.jpg" alt="" class="aspect-2/3 w-full rounded-xl bg-gray-900/5 object-cover shadow-lg">
+                              <div class="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-gray-900/10 ring-inset"></div>
+                            </div>
+                          </div>
+                          <div class="mr-auto w-44 flex-none space-y-8 sm:mr-0 sm:pt-52 lg:pt-36">
+                            <div class="relative">
+                              <img src="/images/misc/code.png" alt="" class="aspect-2/3 w-full rounded-xl bg-gray-900/5 object-cover shadow-lg">
+                              <div class="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-gray-900/10 ring-inset"></div>
+                            </div>
+                            <div class="relative">
+                              <img src="/images/misc/downtown.jpg" alt="" class="aspect-2/3 w-full rounded-xl bg-gray-900/5 object-cover shadow-lg">
+                              <div class="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-gray-900/10 ring-inset"></div>
+                            </div>
+                          </div>
+                          <div class="w-44 flex-none space-y-8 pt-32 sm:pt-0">
+                            <div class="relative">
+                              <img src="/images/misc/room.jpg" alt="" class="aspect-2/3 w-full rounded-xl bg-gray-900/5 object-cover shadow-lg">
+                              <div class="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-gray-900/10 ring-inset"></div>
+                            </div>
+                            <div class="relative">
+                              <img src="/images/misc/lake.jpg" alt="" class="aspect-2/3 w-full rounded-xl bg-gray-900/5 object-cover shadow-lg">
+                              <div class="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-gray-900/10 ring-inset"></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="max-sm:hidden absolute left-1/2 -mt-16 z-50 animate-bounce w-16 h-16 flex items-center justify-center rounded-full border-2 border-white text-4xl text-white">
+                      ↓
+                    </div>
+                  </div>
+                </div>
+            </div>
 
             <!-- Loading indicator -->
             <div id="loading" class="text-center py-10">
@@ -363,50 +433,51 @@
             </div>
 
             <!-- Blog content container -->
-            <div id="blog-container" class="mt-16 space-y-20 lg:mt-20 lg:space-y-20 blog-container"></div>
+            <div id="blog-container" class="mt-16 space-y-20 max-sm:space-y-5 lg:mt-20 max-sm:mt-5 lg:space-y-20 blog-container"></div>
           </div>
         </div>
       </div>
 
       <!-- Template for repository article -->
       <template id="repo-template">
-        <article class="relative isolate flex flex-col gap-8 lg:flex-row">
-          <div class="relative aspect-video sm:aspect-2/1 lg:w-96 lg:shrink-0">
+        <article class="max-sm:mx-2 max-sm:border-b-2 max-sm:border-white max-sm:pb-5 max-sm:space-y-5 relative isolate flex flex-col gap-8 lg:flex-row ">
+          <div class="relative aspect-video sm:aspect-2/1 lg:w-[570px] lg:shrink-0">
             <img src="/placeholder.svg" alt="" class="repo-image absolute inset-0 w-full h-full rounded-2xl bg-gray-50 object-cover">
             <div class="absolute inset-0 rounded-2xl ring-1 ring-gray-900/10 ring-inset"></div>
           </div>
           <div>
             <div class="flex items-center gap-x-4 text-xs">
-              <time datetime="" class="repo-date text-gray-500"></time>
-              <a href="#" class="repo-category relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100"></a>
+              <time datetime="" class="repo-date text-gray-200"></time>
+              <a href="#" class="repo-category relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-900 hover:bg-gray-100"></a>
             </div>
             <div class="group relative max-w-xl">
-              <h3 class="mt-3 text-lg leading-6 font-semibold text-gray-900 group-hover:text-gray-600">
+              <h3 class="mt-3 text-lg leading-6 font-semibold text-white">
                 <a href="#" class="repo-link">
                   <span class="absolute inset-0"></span>
                   <span class="repo-title"></span>
                 </a>
               </h3>
-              <p class="mt-5 text-sm leading-6 text-gray-600 repo-description"></p>
-            </div>
-            <div class="group relative max-w-xl text-black text-sm mt-5">
-              <span class="font-bold">Visit the site: </span>
-              <a href="#" class="site-url">
-              </a>
-              <span class="font-bold"> &rarr;</span>
 
             </div>
-            <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+            <div class="group relative max-w-xl  text-sm mt-5">
+              <p class="text-sm leading-6 text-gray-200 repo-description"></p>
+            </div>
+            <div class="group relative max-w-xl text-white text-sm mt-5">
+              <span class="font-bold">Visit the site: </span>
+              <a href="#" class="site-url  underline-offset-2 hover:text-purple-300 hover:underline">
+              </a>
+            </div>
+            <div class="mt-6 flex border-t border-gray-900/5 pt-6 max-sm:pt-1 max-sm:mt-1">
               <div class="relative flex items-center gap-x-4">
                 <img src="/placeholder.svg" alt="" class="author-avatar w-10 h-10 rounded-full bg-gray-50">
                 <div class="text-sm leading-6">
-                  <p class="font-semibold text-gray-900">
+                  <p class="font-semibold text-white">
                     <a href="#" class="author-link">
                       <span class="absolute inset-0"></span>
                       <span class="author-name"></span>
                     </a>
                   </p>
-                  <p class="text-gray-600 author-role"></p>
+                  <p class="text-grey-300 author-role"></p>
                 </div>
               </div>
             </div>
@@ -678,9 +749,8 @@
     <div id="experence" class="z-0">
       <canvas class="experience-canvas z-0" id="experience-canvas"></canvas>
     </div>
-
-    <script type="module" src="/src/github-blog.js"></script>
     <script type="module" src="/src/loading.js"></script>
+    <script type="module" src="/src/github-blog.js"></script>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

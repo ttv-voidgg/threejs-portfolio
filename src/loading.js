@@ -228,25 +228,29 @@
         gradient.addColorStop(1, '#0a0a0a');
     });
 
-    // 🚀 Simulate loading completion (replace with your actual loading logic)
-    setTimeout(function() {
-        // Fade out loading screen
-        const loadingScreen = document.getElementById('loading-screen');
-        loadingScreen.style.transition = 'opacity 1s ease';
-        loadingScreen.style.opacity = '0';
+    window.addEventListener('load', function() {
 
-        // Stop animation to free resources
-        cancelAnimationFrame(animationFrame);
-
-        // Show content
-        document.documentElement.className = '';
-
-        // Remove loading screen after transition
+        // 🚀 Simulate loading completion (replace with your actual loading logic)
         setTimeout(function() {
-            loadingScreen.style.display = 'none';
-        }, 1000);
+            // Fade out loading screen
+            const loadingScreen = document.getElementById('loading-screen');
+            loadingScreen.style.transition = 'opacity 1s ease';
+            loadingScreen.style.opacity = '0';
 
-        // Initialize your main Three.js scene here
-        // This is where you would call your main initialization code
-    }, 500); // 3 seconds loading time
+            // Stop animation to free resources
+            cancelAnimationFrame(animationFrame);
+
+            // Show content
+            document.documentElement.className = '';
+
+            // Remove loading screen after transition
+            setTimeout(function() {
+                loadingScreen.style.display = 'none';
+            }, 1000);
+
+            // Initialize your main Three.js scene here
+            // This is where you would call your main initialization code
+        }, 3500); // 3 seconds loading time
+
+    });
 })();

@@ -23,7 +23,7 @@ debugDiv.style.display = "none"
 
 // Debug function to log to both console and screen
 function debug(message) {
-    console.log(message)
+    //console.log(message)
     debugDiv.innerHTML += `<div>${message}</div>`
 
     // Keep only the last 10 messages
@@ -226,9 +226,6 @@ function createRepoElement(repo, index) {
     const article = clone.querySelector("article")
     article.classList.add("repo-item")
     article.dataset.index = index
-    article.style.border = "1px solid #e5e7eb"
-    article.style.padding = "20px"
-    article.style.marginBottom = "20px"
 
     // Set image
     const imageElement = clone.querySelector(".repo-image")
@@ -247,7 +244,7 @@ function createRepoElement(repo, index) {
     // Set category
     const categoryElement = clone.querySelector(".repo-category")
     categoryElement.textContent = repo.language || "Project"
-    categoryElement.href = `${repo.html_url}/topics`
+    categoryElement.href = repo.url || repo.html_url
 
     // Set title and link
     const titleElement = clone.querySelector(".repo-title")
@@ -262,7 +259,7 @@ function createRepoElement(repo, index) {
 
     // Set site_url
     const siteurlElement = clone.querySelector(".site-url")
-    siteurlElement.textContent = repo.site_url || ''
+    siteurlElement.textContent = repo.site_url + " →" || ''
     siteurlElement.href = repo.site_url || 'https://webdev.eejay.me'
 
     // Set author info

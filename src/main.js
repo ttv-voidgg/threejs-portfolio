@@ -1,7 +1,10 @@
 import * as THREE from 'three';
+import gsap from "gsap";
+
 import { OrbitControls } from '/src/utils/OrbitControls.js';
 import {DRACOLoader} from "three/addons/loaders/DRACOLoader.js";
 import {GLTFLoader} from "three/addons/loaders/GLTFLoader.js";
+
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
@@ -9,12 +12,9 @@ import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPa
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
 
-import gsap from "gsap";
+import smokeVertexShader from "./shaders/smoke/vertex.glsl?raw";
+import smokeFragmentShader from "./shaders/smoke/fragment.glsl?raw";
 
-//import smokeVertexShader from "./shaders/smoke/vertex.glsl";
-//import smokeFragmentShader from "./shaders/smoke/fragment.glsl";
-//import themeVertexShader from "./shaders/theme/vertex.glsl";
-//import themeFragmentShader from "./shaders/theme/fragment.glsl";
 
 //Initialize some stuff
 const canvas = document.querySelector('#experience-canvas');
@@ -130,7 +130,40 @@ Object.entries(textureMap).forEach(([key, paths]) => {
     loadedTextures.night[key] = nightTexture;
 });
 
+// Smoke Shader setup
+const smokeGeometry = new THREE.PlaneGeometry(1, 1, 16, 64);
+smokeGeometry.translate(0, 0.5, 0);
+smokeGeometry.scale(0.33, 1, 0.33);
 
+const perlinTexture = textureLoader.load("/shaders/perlin.png");
+perlinTexture.wrapS = THREE.RepeatWrapping;
+perlinTexture.wrapT = THREE.RepeatWrapping;
+
+const smokeMaterial = new THREE.ShaderMaterial({
+    vertexShader: smokeVertexShader,
+    fragmentShader: smokeFragmentShader,
+    uniforms: {
+        uTime: new THREE.Uniform(0),
+        uPerlinTexture: new THREE.Uniform(perlinTexture),
+    },
+    side: THREE.DoubleSide,
+    transparent: true,
+    depthWrite: false,
+});
+
+const smoke = new THREE.Mesh(smokeGeometry, smokeMaterial);
+smoke.position.y = 1.53;
+smoke.scale.set(.5,.5,.5);
+
+const smoke2 = new THREE.Mesh(smokeGeometry, smokeMaterial);
+smoke2.position.y = 1.53;
+smoke2.rotation.y = 45;
+smoke2.scale.set(.5,.3,.5);
+
+scene.add(smoke);
+scene.add(smoke2);
+
+//Raycaster
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
 const mouse = new THREE.Vector2();
@@ -183,6 +216,7 @@ let linkedInMesh = null,
     aboutBtn = null,
     contactBtn = null;
 
+let coffeePosition;
 
 video.addEventListener('loadedmetadata', () => {
     const videoAspect = video.videoWidth / video.videoHeight;
@@ -202,6 +236,12 @@ loader.load("/models/model.glb", (glb)=>{
             //LOG ALL MESHES
             console.log('Mesh:', child.name, child);
 
+            //Coffee
+            if (child.name.includes("FifthCoffee")) {
+                coffeePosition = child.position.clone();
+            }
+
+
             //AmongUS
             //Fix for SecondAU010
             const amongUs10 = scene.getObjectByName('SecondAU010');
@@ -215,9 +255,7 @@ loader.load("/models/model.glb", (glb)=>{
                 amongUs10.scale.set(1, 1, 1);
                 amongUs10.updateMatrixWorld(true);
 
-                console.log('Scale normalized for mesh: SecondAU010');
             } else {
-                console.warn('Mesh named SecondAU010 not found or is not a mesh.');
             }
 
             if (
@@ -433,6 +471,20 @@ loader.load("/models/model.glb", (glb)=>{
             }
 
         }
+
+        if (coffeePosition) {
+            smoke.position.set(
+                coffeePosition.x,
+                coffeePosition.y + 0.01,
+                coffeePosition.z
+            );
+            smoke2.position.set(
+                coffeePosition.x,
+                coffeePosition.y + 0.01,
+                coffeePosition.z
+            );
+        }
+
         scene.add(glb.scene);
     })
 });
@@ -808,6 +860,9 @@ const render = (timestamp) => {
     //VARS
     const elapsed = clock.getElapsedTime();
 
+    //Coffee Smoke Animate
+    smokeMaterial.uniforms.uTime.value = elapsed;
+
     // Amplitude = how much it moves, Frequency = how fast it moves
     const wobbleAmount = .5; // Increase this for more wobble
     const wobbleSpeed = .5;
@@ -935,7 +990,7 @@ const render = (timestamp) => {
             }
         }
 
-        canvas.style.cursor = 'pointer';
+        canvas.style.cursor = 'url(../public/images/cursor/pointer.png), auto';
     } else {
         // Reset if no intersection
         if (hoveredMesh) {
@@ -976,7 +1031,7 @@ const render = (timestamp) => {
             });
         }
 
-        canvas.style.cursor = 'default';
+        canvas.style.cursor = 'url(../public/images/cursor/default.png), auto';
     }
 
     //console.log(camera.position);
