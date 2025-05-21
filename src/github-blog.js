@@ -253,6 +253,10 @@ function createRepoElement(repo, index) {
     const linkElement = clone.querySelector(".repo-link")
     linkElement.href = repo.url || repo.html_url
 
+    const linkElement2 = clone.querySelector(".repo-link-2")
+    linkElement2.textContent = repo.url + " →" || repo.html_url
+    linkElement2.href = repo.url || repo.html_url
+
     // Set description
     const descriptionElement = clone.querySelector(".repo-description")
     descriptionElement.textContent = repo.description || `A GitHub repository by ${GITHUB_USERNAME}`
