@@ -218,6 +218,8 @@ video.addEventListener('loadedmetadata', () => {
                     coffeePosition = child.position.clone();
                 }
 
+
+
                 // Fix for SecondAU010
                 const amongUs10 = scene.getObjectByName('SecondAU010');
                 if (amongUs10 && amongUs10.isMesh) {
@@ -272,6 +274,7 @@ video.addEventListener('loadedmetadata', () => {
                     child.scale.set(0, 0, 0);
                 }
 
+
                 // Fan setup
                 if (child.name.includes("fan")) {
                     const name = child.name;
@@ -315,9 +318,9 @@ video.addEventListener('loadedmetadata', () => {
                     interactiveMeshes.push(child);
                 }
 
-                // Apply texture filtering
-                if (child.material.map) {
-                    child.material.map.minFilter = THREE.LinearFilter;
+                //Monitor 1 Screen
+                if (child.name.includes('TargetsMonitorScreen001')) {
+                    interactiveMeshes.push(child);
                 }
 
                 // Special material treatments
@@ -380,6 +383,11 @@ video.addEventListener('loadedmetadata', () => {
 
                     if (child.name === 'TargetsSleeping') {
                         emitMesh = child;
+                    }
+
+                    // Apply texture filtering
+                    if (child.material.map) {
+                        child.material.map.minFilter = THREE.LinearFilter;
                     }
                 }
             }
@@ -874,13 +882,18 @@ const render = (timestamp) => {
             }
 
             // Scale up
-            gsap.to(hoveredMesh.scale, {
-                x: 1.2,
-                y: 1.2,
-                z: 1.2,
-                duration: 0.3,
-                ease: "Power2.easeInOut",
-            });
+            if (hoveredMesh.name === 'TargetsMonitorScreen001') {
+
+            } else {
+                gsap.to(hoveredMesh.scale, {
+                    x: 1.2,
+                    y: 1.2,
+                    z: 1.2,
+                    duration: 0.3,
+                    ease: "Power2.easeInOut",
+                });
+            }
+
 
             // Emissive pulse if material has it
             if (hoveredMesh.material.emissiveIntensity !== undefined) {

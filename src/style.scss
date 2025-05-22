@@ -67,7 +67,13 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
+
+  .button {
+    cursor:url(/images/cursor/pointer.png), auto;
+  }
 }
+
+
 
 //Experience
 

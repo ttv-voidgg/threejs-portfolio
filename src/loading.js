@@ -47,14 +47,15 @@
         mouseY = e.clientY;
     });
 
+    const centerYOffset = -150; // move up by 100 pixels
+
     // Create particles in a more elegant pattern
     for (let i = 0; i < particleCount; i++) {
         // Create a spiral pattern
         const angle = i * 0.35; // More spread out
         const radius = 2 + (i / particleCount) * 15;
-        const x = canvas.width / 2 + Math.cos(angle) * radius * (i / 8);
-        const y = canvas.height / 2 + Math.sin(angle) * radius * (i / 8);
-
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
         // Random size but with more variation
         const size = 1 + Math.random() * 3;
 
@@ -113,7 +114,7 @@
 
             // Target position in orbit
             const targetX = canvas.width / 2 + Math.cos(newAngle) * p.radius * distanceFactor * (i / 8);
-            const targetY = canvas.height / 2 + Math.sin(newAngle) * p.radius * distanceFactor * (i / 8);
+            const targetY = canvas.height / 2 + centerYOffset + Math.sin(newAngle) * p.radius * distanceFactor * (i / 8);
 
             // Mouse influence - more subtle and elegant
             const dx = mouseX - p.x;
@@ -228,34 +229,49 @@
         gradient.addColorStop(1, '#0a0a0a');
     });
 
-    window.addEventListener('load', function() {
+    function enterSite() {
 
         const audio = document.getElementById('bg-music');
+        const loadingScreen = document.getElementById('loading-screen');
 
         audio.volume = 0.02; // Volume range is 0.0 (silent) to 1.0 (full volume)
         audio.play();
 
-        // 🚀 Simulate loading completion (replace with your actual loading logic)
-        setTimeout(function() {
-            // Fade out loading screen
-            const loadingScreen = document.getElementById('loading-screen');
-            loadingScreen.style.transition = 'opacity 1s ease';
-            loadingScreen.style.opacity = '0';
+        // Apply fade-out transition
+        loadingScreen.style.transition = 'opacity 1s ease';
+        loadingScreen.style.opacity = '0';
 
-            // Stop animation to free resources
-            cancelAnimationFrame(animationFrame);
+        // Wait for the fade to finish before hiding it
+        setTimeout(() => {
+            loadingScreen.style.display = 'none';
+        }, 1000); // matches the 1s transition
 
-            // Show content
-            document.documentElement.className = '';
+        // Reset any global styles
+        document.documentElement.className = '';
 
-            // Remove loading screen after transition
-            setTimeout(function() {
-                loadingScreen.style.display = 'none';
-            }, 1000);
 
-            // Initialize your main Three.js scene here
-            // This is where you would call your main initialization code
-        }, 3500); // 3 seconds loading time
+        // Stop animation to free resources
+        cancelAnimationFrame(animationFrame);
+    }
+
+    window.addEventListener('load', function() {
+
+        const audio = document.getElementById('bg-music');
+        const button = document.querySelector('#loading-screen .button div div');
+        const muteToggle = document.getElementById('mute-toggle');
+        const muteIcon = document.getElementById('mute-icon');
+
+        if (button) {
+            button.textContent = 'Enter';
+        }
+
+        muteToggle.addEventListener('click', function () {
+            audio.muted = !audio.muted;
+            muteIcon.src = audio.muted ? '/images/graphics/mute.png' : '/images/graphics/unmute.png';
+        });
+
+        button.addEventListener("click", enterSite);
+
 
     });
 })();
