@@ -982,3 +982,33 @@ const render = (timestamp) => {
 
 // Start the render loop
 render();
+
+function handleIframeMessage(event) {
+    if (event.data?.type === 'IFRAME_CLICKED') {
+        ParentFunction(event.data.value);
+    }
+}
+
+function ParentFunction(value) {
+    gsap.to(overlay, {
+        opacity: 0,
+        duration: 0.3,
+        ease: "power2.inOut",
+    });
+
+    gsap.to("#gameModal", {
+        opacity: 0,
+        scale: 0.9,
+        duration: 0.4,
+        ease: "back.in(1.7)",
+        onComplete: () => {
+            overlay.classList.add("hidden");
+            modal.classList.add("hidden");
+            gsap.set(modal, { clearProps: "opacity,scale" });
+        },
+    });
+
+    isModalOpen = false;
+}
+
+window.addEventListener('message', handleIframeMessage, false);
