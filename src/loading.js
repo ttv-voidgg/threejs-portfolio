@@ -230,6 +230,11 @@
 
     window.addEventListener('load', function() {
 
+        const audio = document.getElementById('bg-music');
+
+        audio.volume = 0.02; // Volume range is 0.0 (silent) to 1.0 (full volume)
+        audio.play();
+
         // 🚀 Simulate loading completion (replace with your actual loading logic)
         setTimeout(function() {
             // Fade out loading screen

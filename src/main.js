@@ -2,8 +2,8 @@ import * as THREE from 'three';
 import gsap from "gsap";
 
 import { OrbitControls } from '/src/utils/OrbitControls.js';
-import {DRACOLoader} from "three/addons/loaders/DRACOLoader.js";
-import {GLTFLoader} from "three/addons/loaders/GLTFLoader.js";
+import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
@@ -15,22 +15,17 @@ import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
 import smokeVertexShader from "./shaders/smoke/vertex.glsl?raw";
 import smokeFragmentShader from "./shaders/smoke/fragment.glsl?raw";
 
-
-//Initialize some stuff
+// Initialize canvas and scene
 const canvas = document.querySelector('#experience-canvas');
-
 const sizes = {
     width: window.innerWidth,
     height: window.innerHeight,
-}
+};
 
-const audio = document.getElementById('bg-music');
-audio.volume = 0.3; // Volume range is 0.0 (silent) to 1.0 (full volume)
-
-const renderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, {
+const renderTarget = new THREE.WebGLRenderTarget(sizes.width, sizes.height, {
     format: THREE.RGBAFormat,
     stencilBuffer: false,
-    samples:10000,
+    samples: 10000,
 });
 
 const scene = new THREE.Scene();
@@ -41,49 +36,30 @@ const textureLoader = new THREE.TextureLoader();
 
 // Model Loader
 const dracoLoader = new DRACOLoader();
-dracoLoader.setDecoderPath( '/draco/' );
+dracoLoader.setDecoderPath('/draco/');
 
 const loader = new GLTFLoader();
-loader.setDRACOLoader( dracoLoader );
+loader.setDRACOLoader(dracoLoader);
 
+// Texture mapping
 const textureMap = {
-    First: {
-        night:"/textures/First_Text_Pak_Night.webp",
-    },
-    Second: {
-        night:"/textures/Second_Text_Pak_Night.webp",
-    },
-    Third: {
-        night:"/textures/Third_Text_Pak_Night.webp",
-    },
-    Fourth: {
-        night:"/textures/Fourth_Text_Pak_Night.webp",
-    },
-    Fifth: {
-        night:"/textures/Fifth_Text_Pak_Night.webp",
-    },
-    Sixth: {
-        night:"/textures/Sixth_Text_Pak_Night.webp",
-    },
-    Seventh: {
-        night:"/textures/Seventh_Text_Pak_Night.webp",
-    },
-    Eight: {
-        night:"/textures/Eight_Text_Pak_Night.webp",
-    },
-    Ninth: {
-        night:"/textures/Ninth_Text_Pak_Night.webp",
-    },
-    Targets: {
-        night:"/textures/Targets.webp",
-    }
+    First: { night: "/textures/First_Text_Pak_Night.webp" },
+    Second: { night: "/textures/Second_Text_Pak_Night.webp" },
+    Third: { night: "/textures/Third_Text_Pak_Night.webp" },
+    Fourth: { night: "/textures/Fourth_Text_Pak_Night.webp" },
+    Fifth: { night: "/textures/Fifth_Text_Pak_Night.webp" },
+    Sixth: { night: "/textures/Sixth_Text_Pak_Night.webp" },
+    Seventh: { night: "/textures/Seventh_Text_Pak_Night.webp" },
+    Eight: { night: "/textures/Eight_Text_Pak_Night.webp" },
+    Ninth: { night: "/textures/Ninth_Text_Pak_Night.webp" },
+    Targets: { night: "/textures/Targets.webp" }
 };
 
 const loadedTextures = {
-    night: {
-    },
-}
+    night: {},
+};
 
+// Create material for texture sets
 const createMaterialForTextureSet = (textureSet) => {
     const material = new THREE.ShaderMaterial({
         uniforms: {
@@ -99,10 +75,9 @@ const createMaterialForTextureSet = (textureSet) => {
             uMixRatio: { value: 0 },
             uTextureSet: { value: textureSet },
         },
-        //vertexShader: themeVertexShader,
-        //fragmentShader: themeFragmentShader,
     });
 
+    // Set texture filtering for all uniforms
     Object.entries(material.uniforms).forEach(([key, uniform]) => {
         if (uniform.value instanceof THREE.Texture) {
             uniform.value.minFilter = THREE.LinearFilter;
@@ -120,9 +95,11 @@ const roomMaterials = {
     Fourth: createMaterialForTextureSet(4),
 };
 
-const ambientLight = new THREE.AmbientLight(0xffffff,3); // black ambient light
+// Add ambient light
+const ambientLight = new THREE.AmbientLight(0xffffff, 3);
 scene.add(ambientLight);
 
+// Load textures
 Object.entries(textureMap).forEach(([key, paths]) => {
     const nightTexture = textureLoader.load(paths.night);
     nightTexture.flipY = false;
@@ -132,7 +109,7 @@ Object.entries(textureMap).forEach(([key, paths]) => {
     loadedTextures.night[key] = nightTexture;
 });
 
-// Smoke Shader setup
+// Smoke shader setup
 const smokeGeometry = new THREE.PlaneGeometry(1, 1, 16, 64);
 smokeGeometry.translate(0, 0.5, 0);
 smokeGeometry.scale(0.33, 1, 0.33);
@@ -153,46 +130,60 @@ const smokeMaterial = new THREE.ShaderMaterial({
     depthWrite: false,
 });
 
+// Create smoke meshes
 const smoke = new THREE.Mesh(smokeGeometry, smokeMaterial);
 smoke.position.y = 1.53;
-smoke.scale.set(.5,.5,.5);
+smoke.scale.set(.5, .5, .5);
 
 const smoke2 = new THREE.Mesh(smokeGeometry, smokeMaterial);
 smoke2.position.y = 1.53;
 smoke2.rotation.y = 45;
-smoke2.scale.set(.5,.3,.5);
+smoke2.scale.set(.5, .3, .5);
 
 scene.add(smoke);
 scene.add(smoke2);
 
-//Raycaster
+// Raycaster setup
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
 const mouse = new THREE.Vector2();
 let hoveredMesh = null;
 let currentPulse = null;
 
+// Mouse move event
 canvas.addEventListener('mousemove', (event) => {
     const rect = canvas.getBoundingClientRect();
     mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 });
 
-// Helper to interpolate between two colors
+// Color interpolation helper
 function lerpColor(color1, color2, factor) {
     const c1 = new THREE.Color(color1);
     const c2 = new THREE.Color(color2);
     return c1.lerp(c2, factor);
 }
 
+// Variables for model elements
 let emitMesh;
-
-//Model and Mesh
 const xAxisFans = [];
 const yAxisFans = [];
 const zAxisFans = [];
+let coffeePosition;
 
-//CPU Video
+// Interactive meshes
+const interactiveMeshes = [];
+let linkedInMesh = null,
+    InstagramMesh = null,
+    GitHubMesh = null,
+    coinBoxMesh = null,
+    plantMesh = null,
+    chairTop = null,
+    workBtn = null,
+    aboutBtn = null,
+    contactBtn = null;
+
+// CPU Video setup
 const video = document.createElement('video');
 video.src = 'videos/1.mp4';
 video.loop = true;
@@ -204,298 +195,215 @@ video.play();
 const videoTexture = new THREE.VideoTexture(video);
 videoTexture.colorSpace = THREE.SRGBColorSpace;
 videoTexture.flipY = false;
-videoTexture.repeat.set(1.0259642601013184,  0.32274699211120605);
+videoTexture.repeat.set(1.0259642601013184, 0.32274699211120605);
 
-const interactiveMeshes = [];
-
-let linkedInMesh = null,
-    InstagramMesh = null,
-    GitHubMesh = null,
-    coinBoxMesh = null,
-    plantMesh = null,
-    chairTop = null,
-    workBtn = null,
-    aboutBtn = null,
-    contactBtn = null;
-
-let coffeePosition;
-
+// Video loaded event
 video.addEventListener('loadedmetadata', () => {
-    const videoAspect = video.videoWidth / video.videoHeight;
+    // Load 3D model
+    loader.load("/models/model.glb", (glb) => {
+        glb.scene.traverse(child => {
+            if (child.isMesh) {
+                // Apply textures based on mesh name
+                Object.keys(textureMap).forEach((key) => {
+                    if (child.name.includes(key)) {
+                        const material = new THREE.MeshStandardMaterial({
+                            map: loadedTextures.night[key],
+                        });
+                        child.material = material;
+                    }
+                });
 
-loader.load("/models/model.glb", (glb)=>{
-    glb.scene.traverse(child=>{
-        if(child.isMesh){
-            Object.keys(textureMap).forEach((key)=>{
-                if(child.name.includes(key)){
-                    const material = new THREE.MeshStandardMaterial({
-                        map: loadedTextures.night[key],
+                // Coffee position
+                if (child.name.includes("FifthCoffee")) {
+                    coffeePosition = child.position.clone();
+                }
+
+                // Fix for SecondAU010
+                const amongUs10 = scene.getObjectByName('SecondAU010');
+                if (amongUs10 && amongUs10.isMesh) {
+                    const currentScale = new THREE.Vector3();
+                    amongUs10.getWorldScale(currentScale);
+                    amongUs10.geometry.applyMatrix4(new THREE.Matrix4().makeScale(
+                        currentScale.x, currentScale.y, currentScale.z
+                    ));
+                    amongUs10.scale.set(1, 1, 1);
+                    amongUs10.updateMatrixWorld(true);
+                }
+
+                // Add interactive meshes
+                if (
+                    child.name.includes("SecondAU001") ||
+                    child.name.includes("SecondAU002") ||
+                    child.name.includes("SecondAU003") ||
+                    child.name.includes("SecondAU004") ||
+                    child.name.includes("SecondAU005") ||
+                    child.name.includes("SecondAU006") ||
+                    child.name.includes("SecondAU008") ||
+                    child.name.includes("SecondAU009") ||
+                    child.name.includes("SecondAU010") ||
+                    child.name.includes("SecondAU011") ||
+                    child.name.includes("SeventhMenuAbout") ||
+                    child.name.includes("SeventhMenuContact") ||
+                    child.name.includes("SeventhMenuProjects")
+                ) {
+                    interactiveMeshes.push(child);
+                }
+
+                // Chair animation setup
+                if (child.name.includes("ThirdChairSeat")) {
+                    chairTop = child;
+                    child.userData.initialRotation = new THREE.Euler().copy(child.rotation);
+                }
+
+                // Apply video texture to computer screen
+                if (child.name.includes("TargetsComputerGPUTarget000")) {
+                    child.material = new THREE.MeshBasicMaterial({
+                        map: videoTexture,
+                    });
+                }
+
+                // Coin box and plant setup
+                if (child.name === 'FifthbakedCoinBox') {
+                    coinBoxMesh = child;
+                    interactiveMeshes.push(coinBoxMesh);
+                }
+                if (child.name === 'FifthbakedCoinBoxPlant') {
+                    plantMesh = child;
+                    child.scale.set(0, 0, 0);
+                }
+
+                // Fan setup
+                if (child.name.includes("fan")) {
+                    const name = child.name;
+                    if (
+                        name.includes("CPUfan008") ||
+                        name.includes("GPUfan002") ||
+                        name.includes("GPUfan009") ||
+                        name.includes("GPUfan016")
+                    ) {
+                        xAxisFans.push(child);
+                    } else if (
+                        name.includes("GPUfan022") ||
+                        name.includes("GPUfan029") ||
+                        name.includes("GPUfan041") ||
+                        name.includes("CPUfan002")
+                    ) {
+                        yAxisFans.push(child);
+                    }
+                }
+
+                // Menu buttons
+                if (child.name.includes("SeventhMenuProjects")) {
+                    workBtn = child;
+                } else if (child.name.includes("SeventhMenuAbout")) {
+                    aboutBtn = child;
+                } else if (child.name.includes("SeventhMenuContact")) {
+                    contactBtn = child;
+                }
+
+                // Social media links
+                if (child.name.includes('LinkedIn021')) {
+                    linkedInMesh = child;
+                    interactiveMeshes.push(child);
+                }
+                if (child.name.includes('LinkedIn023')) {
+                    InstagramMesh = child;
+                    interactiveMeshes.push(child);
+                }
+                if (child.name.includes('LinkedIn028')) {
+                    GitHubMesh = child;
+                    interactiveMeshes.push(child);
+                }
+
+                // Apply texture filtering
+                if (child.material.map) {
+                    child.material.map.minFilter = THREE.LinearFilter;
+                }
+
+                // Special material treatments
+                if (child.name === 'FifthLampShade') {
+                    child.material.side = THREE.DoubleSide;
+                    child.material.transparent = true;
+                    child.material.opacity = .5;
+                    child.material.needsUpdate = true;
+                }
+
+                if (child.name === 'TargetsCase') {
+                    child.material = new THREE.MeshPhysicalMaterial({
+                        transmission: 1,
+                        opacity: .5,
+                        metalness: 0.1,
+                        roughness: 0,
+                        ior: 1.5,
+                        thickness: 0.01,
+                        specularIntensity: 1,
+                        lightIntensity: 1,
+                        exposure: 1,
+                    });
+                }
+
+                if (child.name.includes("fan")) {
+                    child.material = new THREE.MeshBasicMaterial({
+                        color: 0xff6700,
+                    });
+                    child.material.side = THREE.DoubleSide;
+                }
+
+                if (child.name === 'SixthComputerCPUCase') {
+                    child.material.side = THREE.DoubleSide;
+                    child.material.transparent = false;
+                    child.material.opacity = 1;
+                    child.material.needsUpdate = true;
+                }
+
+                // Emissive materials
+                const emissiveMeshes = [
+                    'TargetsSleeping',
+                    'SixthSixthCPUEmitters',
+                    'WallLight',
+                    'TargetsEmitterRag',
+                    'Text'
+                ];
+
+                if (child.isMesh && emissiveMeshes.some(name => child.name.includes(name))) {
+                    const intensity = child.name.includes('WallLight') ||
+                    child.name.includes('TargetsEmitterRag') ? 5 :
+                        child.name.includes('Text') ? 5 :
+                            child.name.includes('SixthSixthCPUEmitters') ? 3 : 4;
+
+                    child.material = new THREE.MeshStandardMaterial({
+                        color: 0x000000,
+                        emissive: new THREE.Color(0xffffff),
+                        emissiveIntensity: intensity,
+                        side: THREE.DoubleSide
                     });
 
-                    child.material = material;
+                    if (child.name === 'TargetsSleeping') {
+                        emitMesh = child;
+                    }
                 }
-            })
-            //LOG ALL MESHES
-            console.log('Mesh:', child.name, child);
-
-            //Coffee
-            if (child.name.includes("FifthCoffee")) {
-                coffeePosition = child.position.clone();
             }
 
-
-            //AmongUS
-            //Fix for SecondAU010
-            const amongUs10 = scene.getObjectByName('SecondAU010');
-
-            if (amongUs10 && amongUs10.isMesh) {
-                const currentScale = new THREE.Vector3();
-                amongUs10.getWorldScale(currentScale);
-
-                amongUs10.geometry.applyMatrix4(new THREE.Matrix4().makeScale(currentScale.x, currentScale.y, currentScale.z));
-
-                amongUs10.scale.set(1, 1, 1);
-                amongUs10.updateMatrixWorld(true);
-
-            } else {
+            // Position smoke at coffee position
+            if (coffeePosition) {
+                smoke.position.set(
+                    coffeePosition.x,
+                    coffeePosition.y + 0.01,
+                    coffeePosition.z
+                );
+                smoke2.position.set(
+                    coffeePosition.x,
+                    coffeePosition.y + 0.01,
+                    coffeePosition.z
+                );
             }
-
-            if (
-                child.name.includes("SecondAU001") ||
-                child.name.includes("SecondAU002") ||
-                child.name.includes("SecondAU003") ||
-                child.name.includes("SecondAU004") ||
-                child.name.includes("SecondAU005") ||
-                child.name.includes("SecondAU006") ||
-                child.name.includes("SecondAU008") ||
-                child.name.includes("SecondAU009") ||
-                child.name.includes("SecondAU010") ||
-                child.name.includes("SecondAU011") ||
-                child.name.includes("SeventhMenuAbout") ||
-                child.name.includes("SeventhMenuContact") ||
-                child.name.includes("SeventhMenuProjects")
-            ) {
-                const name = child.name;
-
-                interactiveMeshes.push(child);
-            }
-
-            //Chair Animation
-            if (child.name.includes("ThirdChairSeat")) {
-                chairTop = child;
-                child.userData.initialRotation = new THREE.Euler().copy(child.rotation);
-            }
-
-            if (child.name.includes("TargetsComputerGPUTarget000")) {
-                const bbox = new THREE.Box3().setFromObject(child);
-                const size = new THREE.Vector3();
-                bbox.getSize(size);
-
-                console.log('Mesh size:', size);
-                child.material = new THREE.MeshBasicMaterial({
-                    map: videoTexture,
-                });
-            }
-
-            if (child.name === 'FifthbakedCoinBox') {
-                coinBoxMesh = child;
-                interactiveMeshes.push(coinBoxMesh);
-            }
-            if (child.name === 'FifthbakedCoinBoxPlant') {
-                plantMesh = child;
-                child.scale.set(0, 0, 0);
-            }
-
-            if (child.name.includes("fan")) {
-                const name = child.name;
-
-                if (
-                    name.includes("CPUfan008") ||
-                    name.includes("GPUfan002") ||
-                    name.includes("GPUfan009") ||
-                    name.includes("GPUfan016")
-                ) {
-                    xAxisFans.push(child);
-                }
-                else if (
-                    name.includes("GPUfan022") ||
-                    name.includes("GPUfan029") ||
-                    name.includes("GPUfan041") ||
-                    name.includes("CPUfan002")
-                ) {
-                    yAxisFans.push(child);
-                }
-
-                console.log("Classified fan:", name);
-            }
-
-
-            if (child.name.includes("SeventhMenuProjects")) {
-                workBtn = child;
-            } else if (child.name.includes("SeventhMenuAbout")) {
-                aboutBtn = child;
-            } else if (child.name.includes("SeventhMenuContact")) {
-                contactBtn = child;
-            }
-
-            if (child.name.includes('LinkedIn021')) {
-                linkedInMesh = child;
-                interactiveMeshes.push(child);
-            }
-            if (child.name.includes('LinkedIn023')) {
-                InstagramMesh = child;
-                interactiveMeshes.push(child);
-            }
-            if (child.name.includes('LinkedIn028')){
-                GitHubMesh = child;
-                interactiveMeshes.push(child);
-            }
-
-            if (child.material.map) {
-                child.material.map.minFilter = THREE.LinearFilter;
-            }
-
-            if (child.name.includes('TargetsMonitorScreen001')) {
-
-            }
-
-            if (child.name === 'FifthLampShade') {
-                // Make material double-sided and fully opaque
-                child.material.side = THREE.DoubleSide;
-                child.material.transparent = true;
-                child.material.opacity = .5;
-                child.material.needsUpdate = true;
-
-                console.log('Updated mesh:', child.name, child.material);
-            }
-
-            if (child.name === 'TargetsCase') {
-                // Replace existing material with a white transparent one
-                child.material = new THREE.MeshPhysicalMaterial({
-                    transmission: 1,
-                    opacity: .5,
-                    metalness:0.1,
-                    roughness:0,
-                    ior: 1.5,
-                    thickness: 0.01,
-                    specularIntensity: 1,
-                    lightIntensity: 1,
-                    exposure: 1,
-                });
-
-                console.log('Updated mesh:', child.name, child.material);
-            }
-
-            if(child.name.includes("fan") ) {
-                child.material = new THREE.MeshBasicMaterial({
-                    color: 0xff6700, // 🔴 Change to any desired color
-                });
-                child.material.side = THREE.DoubleSide;
-            }
-
-            if (child.name === 'SixthComputerCPUCase') {
-                // Make material double-sided and fully opaque
-                child.material.side = THREE.DoubleSide;
-                child.material.transparent = false;
-                child.material.opacity = 1;
-                child.material.needsUpdate = true;
-
-                console.log('Updated mesh:', child.name, child.material);
-            }
-
-
-            if (child.isMesh && child.name === 'TargetsSleeping') {
-                // Create emissive material
-                child.material = new THREE.MeshStandardMaterial({
-                    color: 0x000000,
-                    emissive: new THREE.Color(0xffffff),
-                    emissiveIntensity: 1,
-                    side: THREE.DoubleSide
-                });
-
-                emitMesh = child;
-            }
-
-            if (child.isMesh && child.name === 'SixthSixthCPUEmitters') {
-                // Create emissive material
-                child.material = new THREE.MeshStandardMaterial({
-                    color: 0x000000,
-                    emissive: new THREE.Color(0xffffff),
-                    emissiveIntensity: 3,
-                    side: THREE.DoubleSide
-                });
-
-                emitMesh = child;
-            }
-
-            if (child.name.includes("WallLight")) {
-                child.material = new THREE.MeshStandardMaterial({
-                    color: 0x000000,
-                    emissive: new THREE.Color(0xffffff),
-                    emissiveIntensity: 5,
-                    side: THREE.DoubleSide,
-                });
-
-                emitMesh = child;
-            }
-
-            if (child.isMesh && child.name === 'TargetsEmitterRag') {
-                // Create emissive material
-                child.material = new THREE.MeshStandardMaterial({
-                    color: 0x000000,
-                    emissive: new THREE.Color(0xffffff),
-                    emissiveIntensity: 5,
-                    side: THREE.DoubleSide,
-                });
-
-                emitMesh = child;
-            }
-
-            if (child.isMesh && child.name === 'Text') {
-                // Create emissive material
-                child.material = new THREE.MeshStandardMaterial({
-                    color: 0x000000,
-                    emissive: new THREE.Color(0xffffff),
-                    emissiveIntensity: 5,
-                    side: THREE.DoubleSide
-                });
-
-                emitMesh = child;
-            }
-
-            if (child.isMesh && child.name === 'TargetsSleeping') {
-                // Create emissive material
-                child.material = new THREE.MeshStandardMaterial({
-                    color: 0x000000,
-                    emissive: new THREE.Color(0xffffff),
-                    emissiveIntensity: 4,
-                    side: THREE.DoubleSide
-                });
-
-                emitMesh = child;
-            }
-
-        }
-
-        if (coffeePosition) {
-            smoke.position.set(
-                coffeePosition.x,
-                coffeePosition.y + 0.01,
-                coffeePosition.z
-            );
-            smoke2.position.set(
-                coffeePosition.x,
-                coffeePosition.y + 0.01,
-                coffeePosition.z
-            );
-        }
+        });
 
         scene.add(glb.scene);
-    })
+    });
 });
 
-});
-
+// Camera setup
 const camera = new THREE.PerspectiveCamera(
     35,
     sizes.width / sizes.height,
@@ -503,21 +411,22 @@ const camera = new THREE.PerspectiveCamera(
     200
 );
 
-
 const cameraGroup = new THREE.Group();
 cameraGroup.add(camera);
 scene.add(cameraGroup);
 
 const baseCamY = cameraGroup.position.y || 0;
 
+// Renderer setup
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas,
     antialias: true,
 });
 
-renderer.setSize( sizes.width, sizes.height );
+renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
+// Controls setup
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.minDistance = 5;
 controls.maxDistance = 45;
@@ -525,15 +434,11 @@ controls.minPolarAngle = 0;
 controls.maxPolarAngle = Math.PI / 2;
 controls.minAzimuthAngle = 0;
 controls.maxAzimuthAngle = Math.PI / 2;
-
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
-
 controls.update();
 
-//_Vector3 {x: 12.798676274812095, y: 16.512783721539325, z: 12.785748391518231}
-//_Vector3 {x: -0.487544531130077, y: 3.667334068422673, z: -1.6516437315843748}
-//Set starting camera position
+// Set starting camera position based on screen size
 if (window.innerWidth < 768) {
     camera.position.set(
         29.567116827654726,
@@ -547,12 +452,13 @@ if (window.innerWidth < 768) {
     );
 } else {
     camera.position.set(14.488285527338899, 4.85847717518284, 23.611508023196524);
-    controls.target.set(1.9999999999999996, 3.9969178828491003, -3.788852137422142 );
+    controls.target.set(1.9999999999999996, 3.9969178828491003, -3.788852137422142);
 }
 
-
+// Coin box click state
 let isFifthbakedCoinBoxClicked = false;
 
+// Click event for interactive elements
 window.addEventListener('click', (event) => {
     const mouse = new THREE.Vector2(
         (event.clientX / window.innerWidth) * 2 - 1,
@@ -582,7 +488,7 @@ window.addEventListener('click', (event) => {
     }
 });
 
-//MODALS
+// Modal handling
 const modalIDs = ["projectModal", "aboutModal", "contactModal", "gameModal"];
 const modals = {};
 let isModalOpen = false;
@@ -596,12 +502,9 @@ modalIDs.forEach((id) => {
     if (el) modals[id] = el;
 });
 
-// Show Modal
+// Show modal function
 function showModal(modal) {
-
     if (!modal) return;
-
-    console.log("Opening modal:", modal.id);
 
     // Remove hidden classes first so they're visible for GSAP
     overlay.classList.remove("hidden");
@@ -629,14 +532,11 @@ function showModal(modal) {
     });
 
     isModalOpen = true;
-
 }
 
-// Hide Modal
+// Hide modal function
 function hideModal(modal) {
     if (!modal) return;
-
-    console.log("Closing modal:", modal.id);
 
     gsap.to(overlay, {
         opacity: 0,
@@ -711,19 +611,13 @@ document.querySelectorAll(".modal-exit-button").forEach((button) => {
 
 // For testing with console or devtools
 window.openModalByKey = function (key) {
-    console.log(1);
     const modal = modals[key];
     if (modal) {
         showModal(modal);
-    } else {
-        console.warn(`Modal with key "${key}" not found`);
     }
 };
 
-
-
-
-//Event Listeners
+// Window resize event
 window.addEventListener("resize", () => {
     sizes.width = window.innerWidth;
     sizes.height = window.innerHeight;
@@ -737,15 +631,18 @@ window.addEventListener("resize", () => {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 });
 
+// Click event for interactive elements
 window.addEventListener('click', (event) => {
     pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-    pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
+    pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
     raycaster.setFromCamera(pointer, camera);
     const intersects = raycaster.intersectObjects(scene.children, true);
 
     if (intersects.length > 0) {
         const clickedMesh = intersects[0].object;
+
+        // Social media links
         if (clickedMesh === linkedInMesh) {
             window.open('https://www.linkedin.com/in/jcedeborja', '_blank');
         }
@@ -755,6 +652,8 @@ window.addEventListener('click', (event) => {
         if (clickedMesh === GitHubMesh) {
             window.open('https://github.com/ttv-voidgg/', '_blank');
         }
+
+        // Menu buttons
         if (clickedMesh.name === 'SeventhMenuProjects') {
             showModal(modals.projectModal);
             return;
@@ -768,6 +667,7 @@ window.addEventListener('click', (event) => {
             return;
         }
 
+        // Monitor screen interaction
         if (clickedMesh.name === 'TargetsMonitorScreen001') {
             const newCameraPos = {
                 x: -0.5242167526559158,
@@ -807,11 +707,10 @@ window.addEventListener('click', (event) => {
                 }
             });
         }
-
     }
 });
 
-// Required for postprocessing
+// Post-processing setup
 const composer = new EffectComposer(renderer, renderTarget);
 const fxaaPass = new ShaderPass(FXAAShader);
 
@@ -825,7 +724,7 @@ composer.addPass(fxaaPass);
 const renderPass = new RenderPass(scene, camera);
 composer.addPass(renderPass);
 
-//Softer Colors
+// Film shader for softer colors
 const FilmShader = {
     uniforms: {
         tDiffuse: { value: null },
@@ -874,48 +773,38 @@ const FilmShader = {
   `
 };
 
-
-const softPass = new ShaderPass(FilmShader);
-
-//softPass.uniforms.tint.value = new THREE.Vector3(0.02, 0.02, 0.02); // warm tint
-//softPass.uniforms.noiseIntensity.value = 0.005;
-//composer.addPass(softPass);
-
-// Add Unreal Bloom Pass
+// Add bloom pass
 const bloomPass = new UnrealBloomPass(
     new THREE.Vector2(window.innerWidth, window.innerHeight),
-        0.3,  // strength
-        1.5,  // radius
+    0.3,  // strength
+    1.5,  // radius
     0.85  // threshold
 );
 composer.addPass(bloomPass);
 
-const targetsSleeping = scene.getObjectByName('TargetsSleeping');
+// Animation constants
 const baseY = 4;
 const amplitude = 0.2; // how high it goes up and down
 const frequency = .05; // oscillations per second
 const textAmplitude = .5; // how high it goes up and down
 const rotationAmplitude = 0.00025; // how much it rotates
 const rotationFrequency = .1; // oscillations per second
-let clock = new THREE.Clock();
+const clock = new THREE.Clock();
 
-// Add this near where you create your scene
-//scene.fog = new THREE.Fog(0x000000, 20, 50); // color, near, far
-
+// Render loop
 const render = (timestamp) => {
-    //VARS
+    // Get elapsed time
     const elapsed = clock.getElapsedTime();
 
-    //Coffee Smoke Animate
+    // Update smoke animation
     smokeMaterial.uniforms.uTime.value = elapsed;
 
-    // Amplitude = how much it moves, Frequency = how fast it moves
+    // Camera wobble
     const wobbleAmount = .5; // Increase this for more wobble
     const wobbleSpeed = .5;
-
-    // Float up/down
     cameraGroup.position.y = baseCamY + Math.sin(elapsed * wobbleSpeed) * wobbleAmount;
-    //Orbit Controls
+
+    // Update controls
     controls.update();
 
     // Update fan rotations
@@ -923,7 +812,6 @@ const render = (timestamp) => {
     yAxisFans.forEach(fan => fan.rotation.y += 0.02);
     zAxisFans.forEach(fan => fan.rotation.y -= 0.02);
 
-    //Chair Rotate
     // Chair rotate animation
     if (chairTop) {
         const time = timestamp * 0.001;
@@ -937,39 +825,35 @@ const render = (timestamp) => {
         chairTop.rotation.z = chairTop.userData.initialRotation.z + rotationOffset;
     }
 
+    // Raycaster for hover effects
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(interactiveMeshes, false);
 
+    // Animate floating elements
     const targetsSleeping = scene.getObjectByName('TargetsSleeping');
-
     if (targetsSleeping) {
         const baseRotationX = targetsSleeping.rotation.x; // Save original rotation
         const sine = Math.sin(elapsed * frequency * Math.PI * 2);
         const rotationSine = Math.sin(elapsed * rotationFrequency * Math.PI * 2);
 
         targetsSleeping.position.y = baseY + sine * (amplitude / 2);
-
-        // Oscillate rotation
         targetsSleeping.rotation.x = baseRotationX + rotationSine * rotationAmplitude;
     }
 
+    // Text animation
     const TextName = scene.getObjectByName('Text');
-
     if (TextName) {
+        // Hide on mobile
+        TextName.visible = window.innerWidth > 768;
 
-        if (window.innerWidth <= 768) {
-            TextName.visible = false;
-        } else {
-            TextName.visible = true;
-        }
-
-        const baseRotationX = TextName.rotation.x; // Save original rotation
+        const baseRotationX = TextName.rotation.x;
         const sine = Math.sin(elapsed * frequency * Math.PI * 2);
         const rotationSine = Math.sin(elapsed * rotationFrequency * Math.PI * 2);
 
         TextName.position.y = baseY + sine * (textAmplitude / 2);
     }
 
+    // Handle hover effects
     if (intersects.length > 0) {
         const target = intersects[0].object;
 
@@ -984,7 +868,7 @@ const render = (timestamp) => {
 
             // Ensure emissive setup without overwriting texture
             if (hoveredMesh.material) {
-                hoveredMesh.material.emissive = new THREE.Color(0xFFD700); // white glow
+                hoveredMesh.material.emissive = new THREE.Color(0xFFD700); // gold glow
                 hoveredMesh.material.emissiveIntensity = 0; // safe default
                 hoveredMesh.material.needsUpdate = true;
             }
@@ -1013,7 +897,7 @@ const render = (timestamp) => {
             }
         }
 
-        // When hovering
+        // When hovering over coin box
         if (hoveredMesh.name === 'FifthbakedCoinBox' && isFifthbakedCoinBoxClicked) {
             const plant = scene.getObjectByName('FifthbakedCoinBoxPlant');
             if (plant) {
@@ -1030,7 +914,7 @@ const render = (timestamp) => {
 
                 gsap.to(plant.position, {
                     y: 6.100522613525391,
-                    duration:1,
+                    duration: 1,
                     ease
                 });
             }
@@ -1040,7 +924,7 @@ const render = (timestamp) => {
     } else {
         // Reset if no intersection
         if (hoveredMesh) {
-                gsap.to(hoveredMesh.scale, { x: 1, y: 1, z: 1, duration: 0.3 });
+            gsap.to(hoveredMesh.scale, { x: 1, y: 1, z: 1, duration: 0.3 });
 
             if (hoveredMesh.material.emissiveIntensity !== undefined) {
                 gsap.to(hoveredMesh.material, {
@@ -1051,12 +935,10 @@ const render = (timestamp) => {
             }
 
             if (currentPulse) currentPulse.kill();
-
             hoveredMesh = null;
         }
 
         // Reset plant scale if no longer hovering FifthbakedCoinBox
-        // On mouse out
         const plant = scene.getObjectByName('FifthbakedCoinBoxPlant');
         if (plant && isFifthbakedCoinBoxClicked) {
             const duration = 0.3;
@@ -1080,14 +962,10 @@ const render = (timestamp) => {
         canvas.style.cursor = 'url(/images/cursor/default.png), auto';
     }
 
-    //console.log(camera.position);
-    //console.log(controls.target);
-
-
-
+    // Render the scene
     composer.render(scene, camera);
     requestAnimationFrame(render);
 };
 
-
+// Start the render loop
 render();
