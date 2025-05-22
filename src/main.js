@@ -24,6 +24,8 @@ const sizes = {
     height: window.innerHeight,
 }
 
+const audio = document.getElementById('bg-music');
+audio.volume = 0.3; // Volume range is 0.0 (silent) to 1.0 (full volume)
 
 const renderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, {
     format: THREE.RGBAFormat,
