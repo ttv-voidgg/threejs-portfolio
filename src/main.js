@@ -578,7 +578,7 @@ window.addEventListener('click', (event) => {
 });
 
 //MODALS
-const modalIDs = ["projectModal", "aboutModal", "contactModal"];
+const modalIDs = ["projectModal", "aboutModal", "contactModal", "gameModal"];
 const modals = {};
 let isModalOpen = false;
 let touchHappened = false;
@@ -762,6 +762,47 @@ window.addEventListener('click', (event) => {
             showModal(modals.contactModal);
             return;
         }
+
+        if (clickedMesh.name === 'TargetsMonitorScreen001') {
+            const newCameraPos = {
+                x: -0.5242167526559158,
+                y: 6.570725013126704,
+                z: 0.999009930642536
+            };
+
+            const newTarget = {
+                x: -0.6237140558221332,
+                y: 6.570725013126704,
+                z: -3.999999999999996
+            };
+
+            // Animate camera position
+            gsap.to(camera.position, {
+                x: newCameraPos.x,
+                y: newCameraPos.y,
+                z: newCameraPos.z,
+                duration: 2,
+                onUpdate: () => {
+                    controls.update(); // Keeps controls synced
+                }
+            });
+
+            // Animate OrbitControls target
+            gsap.to(controls.target, {
+                x: newTarget.x,
+                y: newTarget.y,
+                z: newTarget.z,
+                duration: 2,
+                onUpdate: () => {
+                    controls.update();
+                },
+                onComplete: () => {
+                    showModal(modals.gameModal);
+                    return;
+                }
+            });
+        }
+
     }
 });
 
@@ -1036,6 +1077,7 @@ const render = (timestamp) => {
 
     //console.log(camera.position);
     //console.log(controls.target);
+
 
 
     composer.render(scene, camera);
