@@ -351,6 +351,9 @@ loader.load("/models/model.glb", (glb)=>{
 
             if (child.material.map) {
                 child.material.map.minFilter = THREE.LinearFilter;
+            }
+
+            if (clickedMesh.name === 'TargetsMonitorScreen001') {
                 interactiveMeshes.push(child);
             }
 
