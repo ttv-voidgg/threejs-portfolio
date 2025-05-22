@@ -354,7 +354,7 @@ loader.load("/models/model.glb", (glb)=>{
             }
 
             if (child.name.includes('TargetsMonitorScreen001')) {
-                interactiveMeshes.push(child);
+
             }
 
             if (child.name === 'FifthLampShade') {
