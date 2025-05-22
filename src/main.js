@@ -989,13 +989,14 @@ function handleIframeMessage(event) {
 }
 
 function ParentFunction(value) {
+    const modal = document.querySelector('#gameModal');
     gsap.to(overlay, {
         opacity: 0,
         duration: 0.3,
         ease: "power2.inOut",
     });
 
-    gsap.to("#gameModal", {
+    gsap.to(modal, {
         opacity: 0,
         scale: 0.9,
         duration: 0.4,
