@@ -221,15 +221,14 @@ video.addEventListener('loadedmetadata', () => {
 
 
                 // Fix for SecondAU010
-                const amongUs10 = scene.getObjectByName('SecondAU010');
-                if (amongUs10 && amongUs10.isMesh) {
+                if (child.name.includes("SecondAU010")) {
                     const currentScale = new THREE.Vector3();
-                    amongUs10.getWorldScale(currentScale);
-                    amongUs10.geometry.applyMatrix4(new THREE.Matrix4().makeScale(
+                    child.getWorldScale(currentScale);
+                    child.geometry.applyMatrix4(new THREE.Matrix4().makeScale(
                         currentScale.x, currentScale.y, currentScale.z
                     ));
-                    amongUs10.scale.set(1, 1, 1);
-                    amongUs10.updateMatrixWorld(true);
+                    child.scale.set(1, 1, 1);
+                    child.updateMatrixWorld(true);
                 }
 
                 // Add interactive meshes
