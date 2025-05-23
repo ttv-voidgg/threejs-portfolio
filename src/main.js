@@ -671,7 +671,7 @@ window.addEventListener('click', (event) => {
 
         if (clickedMesh) {
             logEvent(analytics, 'mesh_click', {
-                mesh_name: clickedMesh
+                mesh_name: clickedMesh.name
             });
         }
 
