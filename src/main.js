@@ -233,6 +233,10 @@ video.addEventListener('loadedmetadata', () => {
                     }
                 });
 
+                // if (child.isMesh) {
+                //     console.log(child.name);
+                // }
+
                 // Coffee position
                 if (child.name.includes("FifthCoffee")) {
                     coffeePosition = child.position.clone();
@@ -338,7 +342,9 @@ video.addEventListener('loadedmetadata', () => {
                 }
 
                 //Monitor 1 Screen
-                if (child.name.includes('TargetsMonitorScreen001')) {
+                if (child.name.includes('TargetsMonitorScreen001') ||
+                    child.name.includes("SixthSwitch")
+                ){
                     interactiveMeshes.push(child);
                 }
 
@@ -700,6 +706,20 @@ window.addEventListener('click', (event) => {
             return;
         }
 
+        //Handle PC On
+        const beep = new Audio('/audio/beep.mp3');
+
+        function playBeepOnce() {
+            if (beep.paused) {
+                beep.currentTime = 0; // rewind just in case
+                beep.play();
+            }
+        }
+
+        if (clickedMesh.name === 'SixthSwitch') {
+            playBeepOnce();
+        }
+
         // Monitor screen interaction
         if (clickedMesh.name === 'TargetsMonitorScreen001') {
             const newCameraPos = {
@@ -907,7 +927,9 @@ const render = (timestamp) => {
             }
 
             // Scale up
-            if (hoveredMesh.name === 'TargetsMonitorScreen001') {
+            if (hoveredMesh.name === 'TargetsMonitorScreen001' ||
+                hoveredMesh.name === 'SixthSwitch'
+            ) {
 
             } else {
                 gsap.to(hoveredMesh.scale, {

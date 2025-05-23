@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <noscript><link rel="stylesheet" href="/src/style.scss"></noscript>
+    <link rel="preload" href="/src/style.scss" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <style>
       html.loading *,
       html.loading *::before,
@@ -17,11 +19,85 @@
         align-items: center;
         justify-content: center;
         color: white;
-      }
-    </style>
 
-    <noscript><link rel="stylesheet" href="/src/style.scss"></noscript>
-    <link rel="preload" href="/src/style.scss" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        .button {
+          cursor: url(/images/cursor/pointer.png), auto;
+          --tw-text-opacity: 1;
+          color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+          font-weight: 800;
+          font-size: 1.875rem;
+          line-height: 2.25rem;
+          font-family: Audiowide, cursive;
+          text-align: center;
+          bottom: 10rem;
+          position: absolute;
+
+          .outer {
+            transition-property: all;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
+            padding: 0.5rem;
+            --tw-bg-opacity: 1;
+            background-color: rgb(126 34 206 / var(--tw-bg-opacity, 1));
+            border-radius: 1.5rem;
+            width: 100%;
+            margin-bottom: 1.25rem;
+
+            .inner {
+              padding-top: 0.5rem;
+              padding-bottom: 0.5rem;
+              padding-left: 2.5rem;
+              padding-right: 2.5rem;
+              --tw-border-opacity: 1;
+              border-color: rgb(255 255 255 / var(--tw-border-opacity, 1));
+              border-width: 8px;
+              border-radius: 1rem;
+              justify-content: center;
+              align-items: center;
+              width: 100%;
+              display: inline-flex;
+
+              svg {
+                --tw-text-opacity: 1;
+                color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+                animation: spin 1s linear infinite;
+                width: 2rem;
+                height: 2rem;
+                margin-right: 0.75rem;
+                margin-left: -0.25rem;
+                display: block;
+                vertical-align: middle;
+              }
+            }
+          }
+
+          .navigation {
+            font-weight: 700;
+            font-size: 1.5rem;
+            line-height: 2rem;
+            display: block;
+            margin-bottom: 0.75rem;
+
+            .navi-head {
+              font-weight: 700;
+              font-size: 24px;
+              line-height: 32px;
+              display: block;
+              margin-bottom: 0.75rem;
+            }
+
+            .navi-body {
+              font-size: 18px;
+              line-height: 28px;
+            }
+
+          }
+
+        }
+
+      }
+
+    </style>
 
     <meta charset="UTF-8" />
     <!-- Primary Meta Tags -->
@@ -75,16 +151,16 @@
   </button>
 
   <div id="loading-screen">
-    <div class=" button absolute bottom-40 padding-5 text-white text-3xl text-center font-extrabold font-audiowide">
-      <div class="w-full bg-purple-700 hover:bg-purple-500 transition-all p-2  w-96 rounded-3xl mb-5">
-        <div class="border-white py-2 px-10 border-8 rounded-2xl inline-flex w-full items-center justify-center w-ful">
-          <svg class="mr-3 -ml-1 size-8 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+    <div class=" button">
+      <div class="outer">
+        <div class="inner">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
           Loading...
         </div>
       </div>
-      <div class="sm-min:hidden font-medium">
-        <span class="font-bold block mb-3 text-2xl">NAVIGATION:</span>
-        <p class="text-lg">
+      <div class="navigation">
+        <span class="navi-head">NAVIGATION:</span>
+        <p class="navi-body">
           LEFT CLICK - Rotate Axis</br>
           RIGHT CLICK - Pan</br>
           MIDDLE SCROLL - Zoom in/out</br>
