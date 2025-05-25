@@ -211,6 +211,8 @@ window.onload = function () {
             setTimeout(() => {
                 loadingScreen.style.display = 'none';
             }, 1000);
+
+            cancelAnimationFrame(animationFrame);
         }
 
         // 🔥 These were previously missing:
