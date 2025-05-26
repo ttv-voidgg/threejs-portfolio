@@ -27,7 +27,7 @@
           font-weight: 800;
           font-size: 1.875rem;
           line-height: 2.25rem;
-          font-family: Audiowide, cursive;
+          font-family: Audiowide;
           text-align: center;
           bottom: 10rem;
           position: absolute;
@@ -71,8 +71,13 @@
             }
           }
 
+          .outer:hover {
+            filter: saturate(50%);
+          }
+
           .navigation {
-            font-weight: 700;
+            font-family: Montserrat;
+            font-weight: 400;
             font-size: 1.5rem;
             line-height: 2rem;
             display: block;
@@ -89,6 +94,11 @@
             .navi-body {
               font-size: 18px;
               line-height: 28px;
+            }
+
+            span {
+              font-size: 16px;
+              font-style: italic;
             }
 
           }
@@ -141,7 +151,8 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Audiowide&Roboto&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Audiowide&Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Audiowide&Roboto&family=Montserrat:ital,wght@300;700&display=swap" rel="stylesheet">
   </head>
 
   <body class="font-montserrat loading cursor">
@@ -159,11 +170,12 @@
         </div>
       </div>
       <div class="navigation">
-        <span class="navi-head">NAVIGATION:</span>
+        <span class="navi-head">Controls:</span>
         <p class="navi-body">
-          LEFT CLICK - Rotate Axis</br>
+          LEFT CLICK - Rotate Axis / Interact with Object</br>
           RIGHT CLICK - Pan</br>
           MIDDLE SCROLL - Zoom in/out</br>
+          </br>
         </p>
       </div>
     </div>
