@@ -472,7 +472,18 @@ controls.dampingFactor = 0.05;
 controls.update();
 
 // Set starting camera position based on screen size
-if (window.innerWidth < 768) {
+if (window.innerWidth <= 1280) {
+     camera.position.set(
+         16.202353126343645,
+         5.131229644533014,
+         28.370903777257453
+     );
+     controls.target.set(
+         2,
+         3.43913222924336,
+         -4
+     );
+} else if (window.innerWidth < 768) {
     camera.position.set(
         29.567116827654726,
         14.018476147584705,
@@ -846,6 +857,10 @@ const clock = new THREE.Clock();
 
 // Render loop
 const render = (timestamp) => {
+
+    //console.log(camera.position);
+    //console.log(controls.target);
+
     // Get elapsed time
     const elapsed = clock.getElapsedTime();
 
