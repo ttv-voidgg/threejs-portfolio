@@ -483,16 +483,12 @@ if (window.innerWidth <= 1280) {
          3.43913222924336,
          -4
      );
-} else if (window.innerWidth < 768) {
+} if (window.innerWidth <= 768) {
     camera.position.set(
-        29.567116827654726,
-        14.018476147584705,
-        31.37040363900147
+        0.42276232499978644, 5.132038077633577, 41.00088647256652
     );
     controls.target.set(
-        -0.08206262548844094,
-        3.3119233527087255,
-        -0.7433922282864018
+        0.42276232499978644, 4.875297741785342, -3.99838112591722
     );
 } else {
     camera.position.set(14.488285527338899, 4.85847717518284, 23.611508023196524);
@@ -858,8 +854,8 @@ const clock = new THREE.Clock();
 // Render loop
 const render = (timestamp) => {
 
-    //console.log(camera.position);
-    //console.log(controls.target);
+    console.log(camera.position);
+    console.log(controls.target);
 
     // Get elapsed time
     const elapsed = clock.getElapsedTime();
