@@ -240,7 +240,7 @@ video.addEventListener('loadedmetadata', () => {
                 // Coffee position
                 if (child.name.includes("FifthCoffee")) {
                     coffeePosition = child.position.clone();
-                    console.log(child);
+                    //console.log(child.name);
                 }
 
 
