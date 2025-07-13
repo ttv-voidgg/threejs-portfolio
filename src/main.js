@@ -233,13 +233,14 @@ video.addEventListener('loadedmetadata', () => {
                     }
                 });
 
-                 if (child.isMesh) {
-                     console.log(child.name);
-                 }
+                // if (child.isMesh) {
+                //     console.log(child.name);
+                // }
 
                 // Coffee position
                 if (child.name.includes("FifthCoffee")) {
                     coffeePosition = child.position.clone();
+                    console.log(child);
                 }
 
 
