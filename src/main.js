@@ -854,8 +854,8 @@ const clock = new THREE.Clock();
 // Render loop
 const render = (timestamp) => {
 
-    console.log(camera.position);
-    console.log(controls.target);
+    //console.log(camera.position);
+    //console.log(controls.target);
 
     // Get elapsed time
     const elapsed = clock.getElapsedTime();
