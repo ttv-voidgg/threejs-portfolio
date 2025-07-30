@@ -1103,7 +1103,7 @@ console.log(
 );
 
 console.log(
-    "%cRiddle:\nI am not a function, yet I return a value.\nI'm called, but I'm never defined.\nI can be short or long, but if I’m missing—your program dies.\nWhat am I?",
+    "%cRiddle:\nI am not a function, yet I return a value.\nI'm called, but I'm never defined.\nI can be short or long, but if I’m missing—your program dies.\nWhat am I?\nEnclose your answer inside a guess('answer'); function",
     "color: #2196f3; font-size: 14px; margin-top: 10px;"
 );
 
