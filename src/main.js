@@ -1072,3 +1072,38 @@ function ParentFunction(value) {
 }
 
 window.addEventListener('message', handleIframeMessage, false);
+
+console.clear();
+console.log(
+    "%cHi! I'm Juan Carlos de Borja 👋\n a Full-Stack Developer based in Winnipeg, MB",
+    "color: #ff9800; font-size: 16px; font-weight: bold; padding: 6px; border-left: 5px solid #ff5722; margin-bottom: 10px;"
+);
+
+console.log(
+    "%cGitHub: https://github.com/eejayme\nLinkedIn: https://linkedin.com/in/jcedeborja",
+    "color: #607d8b; font-size: 13px; margin-top: 0;"
+);
+
+console.log(
+    "%cWelcome to the JavaScript Riddle Challenge!",
+    "color: white; background: #4caf50; font-size: 16px; padding: 8px; border-radius: 4px;"
+);
+
+console.log(
+    "%cRiddle:\nI am not a function, yet I return a value.\nI'm called, but I'm never defined.\nI can be short or long, but if I’m missing—your program dies.\nWhat am I?",
+    "color: #2196f3; font-size: 14px; margin-top: 10px;"
+);
+
+const answer = prompt("What is your answer to the riddle?");
+
+if (answer?.toLowerCase().trim() === "return") {
+    console.log(
+        "%c🎉 Congratulations! You solved the riddle!",
+        "color: white; background: #673ab7; font-size: 16px; padding: 8px; border-radius: 4px;"
+    );
+} else {
+    console.log(
+        "%c❌ Oops! Try again.",
+        "color: red; font-size: 14px;"
+    );
+}
