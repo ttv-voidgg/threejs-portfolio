@@ -1073,6 +1073,19 @@ function ParentFunction(value) {
 
 window.addEventListener('message', handleIframeMessage, false);
 
+console.error = () => {};
+console.warn = () => {};
+console.debug = () => {};
+console.info = () => {};
+
+window.onerror = function () {
+    return true; // Suppresses the default browser error dialog
+};
+
+window.addEventListener('unhandledrejection', function (event) {
+    event.preventDefault();
+});
+
 console.clear();
 console.log(
     "%cHi! I'm Juan Carlos de Borja 👋\n a Full-Stack Developer based in Winnipeg, MB",
@@ -1094,16 +1107,17 @@ console.log(
     "color: #2196f3; font-size: 14px; margin-top: 10px;"
 );
 
-const answer = prompt("What is your answer to the riddle?");
-
-if (answer?.toLowerCase().trim() === "return") {
-    console.log(
-        "%c🎉 Congratulations! You solved the riddle!",
-        "color: white; background: #673ab7; font-size: 16px; padding: 8px; border-radius: 4px;"
-    );
-} else {
-    console.log(
-        "%c❌ Oops! Try again.",
-        "color: red; font-size: 14px;"
-    );
-}
+window.guess = function (userAnswer) {
+    const correct = "return";
+    if (userAnswer?.toLowerCase().trim() === correct) {
+        console.log(
+            "%c🎉 Congratulations! You solved the riddle!",
+            "color: white; background: #673ab7; font-size: 16px; padding: 8px; border-radius: 4px;"
+        );
+    } else {
+        console.log(
+            "%c❌ Nope! Try again.",
+            "color: red; font-size: 14px;"
+        );
+    }
+};
