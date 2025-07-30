@@ -1093,7 +1093,7 @@ console.log(
 );
 
 console.log(
-    "%cGitHub: https://github.com/eejayme\nLinkedIn: https://linkedin.com/in/jcedeborja",
+    "%cGitHub: https://github.eejay.me\nLinkedIn: https://linkedin.eejay.me",
     "color: #607d8b; font-size: 13px; margin-top: 0;"
 );
 
