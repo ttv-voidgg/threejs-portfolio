@@ -162,23 +162,36 @@
 </button>
 
 <div id="loading-screen">
-  <div class=" button">
+  <div class="button">
     <div class="outer">
       <div class="inner">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
         Loading...
       </div>
     </div>
+
+    <!-- Button styled link -->
+    <div class="outer !bg-lime-300 !text-black">
+      <div class="inner !border-black">
+        <a href="https://resume.eejay.me/" target="_blank">Classic Resume</a>
+      </div>
+    </div>
+
+
     <div class="navigation">
       <span class="navi-head">Controls:</span>
       <p class="navi-body">
-        LEFT CLICK - Rotate Axis / Interact with Object</br>
-        RIGHT CLICK - Pan</br>
-        MIDDLE SCROLL - Zoom in/out</br>
-        </br>
+        LEFT CLICK - Rotate Axis / Interact with Object<br />
+        RIGHT CLICK - Pan<br />
+        MIDDLE SCROLL - Zoom in/out<br /><br />
       </p>
     </div>
   </div>
+
+
 
 
   <canvas id="loading-canvas"></canvas>
@@ -209,6 +222,11 @@
                   <div class="mx-auto max-w-2xl lg:mx-0 lg:max-w-xl">
                     <h1 class="text-5xl font-semibold tracking-tight text-pretty text-white sm:text-7xl">Hi, I’m Juan Carlos de Borja</h1>
                     <p class="mt-8 text-lg font-medium text-pretty text-gray-500 sm:text-xl/8">An adventurer, full-stack developer, network and systems administrator, project manager, 3D artist, and photographer based in Winnipeg.</p>
+                    <a href="http://resume.eejay.me/" target="_blank" rel="noopener noreferrer"
+                       class="inline-block mt-8 px-6 py-3 bg-green-500 text-gray-900 font-semibold rounded-md hover:bg-green-600 transition-colors duration-300">
+                      View Classic Resume
+                    </a>
+
                   </div>
                 </div>
               </div>
