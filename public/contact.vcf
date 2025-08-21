@@ -7,10 +7,10 @@ PHOTO;ENCODING=b;TYPE=JPEG:/9j/4S98RXhpZgAATU0AKgAAAAgACAESAAMAAAABAAEAAAEaAAUAA
 TEL;WORK:4312757015
 EMAIL;INTERNET;WORK:juancarlos.deborja@gmail.com
 EMAIL;INTERNET;WORK:webdev@eejay.me
-URL:https://linkedin.eejay.me
-URL:https://webdev.eejay.me
-URL:https://github.eejay.me
-URL:https://creative.eejay.me
-URL:https://eejay.me
+URL;TYPE=LinkedIn:https://linkedin.eejay.me
+URL;TYPE=Portfolio:https://webdev.eejay.me
+URL;TYPE=GitHub:https://github.eejay.me
+URL;TYPE=Creative:https://creative.eejay.me
+URL;TYPE=Personal:https://eejay.me
 ADRWORK;POSTAL:;;;Winnipeg;Manitoba;;Canada
 END:VCARD
